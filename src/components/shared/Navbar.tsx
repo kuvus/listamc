@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { Button } from '@/components/shared/Button'
 import { FunctionComponent } from 'react'
+import Link from 'next/link'
 
 const Pages = [
     {
@@ -27,12 +28,14 @@ export const Navbar: FunctionComponent = () => {
                 className={
                     'flex flex-wrap justify-between items-center max-w-7xl mx-auto gap-8 sm:gap-4 lg:gap-12 py-3'
                 }>
-                <Image
-                    src={'/assets/listamc-64x64.png'}
-                    alt={'ListaMC'}
-                    width={64}
-                    height={64}
-                />
+                <Link href={'/'}>
+                    <Image
+                        src={'/assets/listamc-64x64.png'}
+                        alt={'ListaMC'}
+                        width={64}
+                        height={64}
+                    />
+                </Link>
                 <ul
                     className={
                         'list-none gap-8 hidden font-semibold text-text md:flex'
@@ -40,7 +43,7 @@ export const Navbar: FunctionComponent = () => {
                     {Pages.map(page => {
                         return (
                             <li key={page.key}>
-                                <a href={page.href}>{page.text}</a>
+                                <Link href={page.href}>{page.text}</Link>
                             </li>
                         )
                     })}

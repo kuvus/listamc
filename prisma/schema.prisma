@@ -57,7 +57,7 @@ model VerificationToken {
 }
 
 model Server {
-  id             String          @id @default(uuid())
+  id             Int             @id @default(autoincrement())
   address        String
   ownerId        String?
   owner          User?           @relation(fields: [ownerId], references: [id])
@@ -71,7 +71,7 @@ model Server {
 
 model ServerData {
   id             String  @id @default(uuid())
-  server_id      String  @unique
+  server_id      Int     @unique
   players_online Int
   players_max    Int
   version        String
@@ -91,7 +91,7 @@ model ServerHistory {
 
 model Promotion {
   id         String   @id @default(uuid())
-  server_id  String   @unique
+  server_id  Int      @unique
   date_start DateTime
   date_end   DateTime
   server     Server   @relation(fields: [server_id], references: [id])
@@ -99,7 +99,7 @@ model Promotion {
 
 model Vote {
   id        String   @id @default(uuid())
-  server_id String
+  server_id Int
   date      DateTime @default(now())
   hash      String
   server    Server   @relation(fields: [server_id], references: [id])
@@ -114,7 +114,7 @@ model Voucher {
 
 model ServerMetadata {
   id          String @id @default(uuid())
-  server_id   String @unique
+  server_id   Int    @unique
   description String
   gamemodes   Json
   urls        Json

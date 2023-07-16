@@ -7,6 +7,16 @@ export async function GET(
     request: NextRequest,
     { params }: { params: { slug: string[] } }
 ) {
+    console.log(params.slug)
+    if (params.slug.length !== 4 && params.slug[0] !== 'count')
+        return NextResponse.json(
+            { error: 'Invalid number of parameters' },
+            { status: 400 }
+        )
+
+    if (params.slug[0] === 'count')
+        return NextResponse.json({ count: await prisma.server.count() })
+
     const range = params.slug[0]
     let sortBy = params.slug[1]
     let sortOrder = params.slug[2]

@@ -6,6 +6,9 @@ export async function GET(
     { params }: { params: { serverId: string } }
 ) {
     const { serverId } = params
+
+    const serverIdParsed = parseInt(serverId)
+
     const select = {
         id: true,
         address: true,
@@ -26,19 +29,26 @@ export async function GET(
         },
         ServerMetadata: true,
     }
-    let server = await prisma.server.findUnique({
-        where: {
-            id: serverId,
-        },
-        select: select,
-    })
-    if (!server)
+
+    let server
+
+    if (isNaN(parseInt(serverId)))
         server = await prisma.server.findUnique({
             where: {
                 address: serverId,
             },
             select: select,
         })
+    else
+        server = await prisma.server.findUnique({
+            where: {
+                id: serverIdParsed,
+            },
+            select: select,
+        })
 
-    return NextResponse.json(server || {})
+    if (!server)
+        return NextResponse.json({ error: 'Server not found' }, { status: 404 })
+
+    return NextResponse.json(server)
 }

@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'react'
+import Link from 'next/link'
 
 const ButtonThemes = {
     primary: 'text-text bg-sky-500 hover:bg-sky-600',
@@ -8,9 +9,9 @@ const ButtonThemes = {
 type ButtonProps = {
     children?: React.ReactNode
     type: string
-    size: string
+    size?: string
     onClick?: () => void
-    href: string
+    href?: string
     element: string
     className?: string
 }
@@ -24,16 +25,20 @@ export const Button: FunctionComponent<ButtonProps> = ({
     element,
     className,
 }) => {
-    const classes = `px-8 py-2.5  rounded font-semibold inline-block ${
+    const classes = `px-8 py-2.5  rounded font-semibold inline-block text-base w-auto ${
         className || ''
     } ${ButtonThemes[type] || ''}`
 
     if (element === 'a')
         return (
-            <a className={classes} onClick={onClick} href={href}>
+            <Link className={classes} href={`${href}`}>
                 <span>{children}</span>
-            </a>
+            </Link>
         )
 
-    return <button className={classes}>{children}</button>
+    return (
+        <button className={classes} onClick={onClick}>
+            {children}
+        </button>
+    )
 }

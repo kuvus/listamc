@@ -14,16 +14,22 @@ export const ServerList: FunctionComponent<ServerListProps> = async ({
 }) => {
     const data = await getData(promoted, page)
 
-    if (promoted && data.length === 0)
-        return (
-            <div
-                className={`px-8 py-3 flex justify-between border border-semi-border rounded text-xl hover:cursor-pointer ${
-                    promoted ? 'bg-semi-promoted' : 'bg-semi-bg'
-                }`}>
-                Chcesz zareklamować swój serwer? Wykup promowanie za jedyne 80gr
-                za dzień!
-            </div>
-        )
+    if (data.length === 0)
+        if (promoted)
+            return (
+                <div
+                    className={`px-8 py-3  min-h-fit flex justify-center items-center text-center border border-semi-border rounded text-2xl bg-semi-promoted`}>
+                    Chcesz zareklamować swój serwer? <br /> Wykup promowanie za
+                    jedyne 50gr za dzień!
+                </div>
+            )
+        else
+            return (
+                <div
+                    className={`px-8 py-7  min-h-fit flex justify-center items-center text-center border border-semi-border rounded text-2xl bg-semi-bg`}>
+                    Aż tyle serwerów jeszcze nie mamy :(
+                </div>
+            )
 
     return (
         <div className={'mt-4 flex flex-col gap-2'}>

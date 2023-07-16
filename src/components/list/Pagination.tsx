@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface PaginationProps {
     current: number
-    max: number
 }
 
 interface PaginationButtonProps {
@@ -81,14 +80,16 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
     )
 }
 
-export const Pagination: FunctionComponent<PaginationProps> = ({
+export const Pagination: FunctionComponent<PaginationProps> = async ({
     current,
-    max,
 }) => {
+    const max = Math.ceil((await getData())['count'] / 20) || 1
     const d = calculatePagination(current, max)
 
+    if (d.length == 2 && d[0] == d[1]) d.pop()
+
     return (
-        <div className={'flex gap-2 mt-8 justify-center'}>
+        <div className={'flex gap-2 mt-12 justify-center'}>
             <PaginationButton
                 key={-20}
                 href={`/p/${current !== 1 ? current - 1 : 1}`}
@@ -131,4 +132,18 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
             </PaginationButton>
         </div>
     )
+}
+
+const getData = async () => {
+    const res = await fetch(`${process.env.API_URL}/servers/count`, {
+        next: { revalidate: 10 },
+    })
+    // TODO: zmień revalidate na większe (teraz 10s)
+
+    if (!res.ok) {
+        // This will activate the closest `error.js` Error Boundary
+        throw new Error('Failed to fetch data')
+    }
+
+    return res.json()
 }
