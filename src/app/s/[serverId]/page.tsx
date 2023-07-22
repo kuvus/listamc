@@ -46,10 +46,7 @@ export default async function Server({ params: { serverId } }) {
         const data: Data = await getData(serverIdUrl)
 
         return (
-            <div
-                className={
-                    'flex flex-col gap-4 container mx-auto xl:max-w-7xl mt-16'
-                }>
+            <div className={'flex flex-col gap-4 container xl:max-w-7xl mt-16'}>
                 <Card className={'justify-between items-center gap-4'}>
                     <div className={'flex flex-col'}>
                         <span className={'text-lg font-semibold'}>
@@ -70,7 +67,10 @@ export default async function Server({ params: { serverId } }) {
                 </Card>
                 <div className={'flex flex-row gap-4 flex-wrap lg:flex-nowrap'}>
                     <div className={'flex flex-col gap-4 w-full'}>
-                        <div className={'flex flex-row gap-4 columns-3'}>
+                        <div
+                            className={
+                                'hidden md:flex flex-row gap-4 columns-3'
+                            }>
                             <Card className={'justify-between items-center'}>
                                 <div className={'flex flex-col'}>
                                     <span>Liczba graczy</span>
@@ -148,11 +148,14 @@ export default async function Server({ params: { serverId } }) {
                     </Card>
                 </div>
                 <Card
-                    className={'bg-semi-promoted justify-between items-center'}>
+                    className={
+                        'bg-semi-promoted text-center md:text-left justify-center md:justify-between items-center flex flex-wrap md:flex-nowrap gap-4'
+                    }>
                     <span className={'text-xl font-semibold'}>
                         Wykup promowanie tego serwera za jedyne 50gr za dzień!
                     </span>
                     <Modal
+                        title={'Promowanie'}
                         buttonType={'primary'}
                         buttonText={'Wykup promowanie!'}>
                         Test
@@ -166,9 +169,72 @@ export default async function Server({ params: { serverId } }) {
                                 Jesteś właścicielem tego serwera?
                             </span>
                             <Modal
+                                title={'Przypisanie serwera do konta'}
                                 buttonType={'outline'}
                                 buttonText={'Przypisz serwer do konta'}>
-                                Test
+                                <div className='flex w-full relative'>
+                                    <input
+                                        type='radio'
+                                        id='option0'
+                                        name='tabs'
+                                        className='appearance-none'
+                                    />
+                                    <label
+                                        htmlFor='option0'
+                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        OPTION 0
+                                    </label>
+
+                                    <input
+                                        type='radio'
+                                        id='option1'
+                                        name='tabs'
+                                        className='appearance-none'
+                                    />
+                                    <label
+                                        htmlFor='option1'
+                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        OPTION 1
+                                    </label>
+
+                                    <input
+                                        type='radio'
+                                        id='option2'
+                                        name='tabs'
+                                        className='appearance-none'
+                                    />
+                                    <label
+                                        htmlFor='option2'
+                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        OPTION 2
+                                    </label>
+
+                                    <input
+                                        type='radio'
+                                        id='option3'
+                                        name='tabs'
+                                        className='appearance-none'
+                                    />
+                                    <label
+                                        htmlFor='option3'
+                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        OPTION 3
+                                    </label>
+
+                                    <input
+                                        type='radio'
+                                        id='option4'
+                                        name='tabs'
+                                        className='appearance-none'
+                                    />
+                                    <label
+                                        htmlFor='option4'
+                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        OPTION 4
+                                    </label>
+
+                                    <div className='w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full p-0 h-full bg-indigo-600 absolute transform transition-transform tabAnim'></div>
+                                </div>
                             </Modal>
                         </Card>
                         <Card className={'gap-6 flex-col text-center py-10'}>
@@ -176,13 +242,8 @@ export default async function Server({ params: { serverId } }) {
                                 Dodaj widget ListaMC.pl na swoją stronę
                                 internetową!
                             </span>
-                            {/*<Button*/}
-                            {/*    type={'outline'}*/}
-                            {/*    element={'a'}*/}
-                            {/*    href={`/s/${serverId}/widgets`}>*/}
-                            {/*    Przeglądaj widgety*/}
-                            {/*</Button>*/}
                             <Modal
+                                title={'Widgety'}
                                 buttonType={'outline'}
                                 buttonText={'Przeglądaj widgety'}>
                                 Test

@@ -10,7 +10,7 @@ export default function Page({ params: { slug } }) {
 
         return (
             <>
-                <div className={'container mx-auto xl:max-w-7xl mt-24'}>
+                <div className={'container xl:max-w-7xl mt-24'}>
                     <ServerList page={numericPage} promoted={false} />
                 </div>
                 <Pagination current={numericPage} />

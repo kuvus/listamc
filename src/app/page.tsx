@@ -9,8 +9,8 @@ import { Footer } from '@/components/shared/Footer'
 export default function Home() {
     return (
         <>
-            <div className={'container mx-auto xl:max-w-7xl'}>
-                <div className={'flex justify-between mt-16'}>
+            <div className={'container xl:max-w-7xl'}>
+                <div className={'flex justify-between mt-16 flex-wrap'}>
                     <h1 className={'text-xl font-semibold'}>
                         Serwery promowane
                     </h1>
