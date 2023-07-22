@@ -25,6 +25,11 @@ module.exports = {
                 0.5: '0.5px',
             },
         },
+        container: {
+            center: true,
+            padding: '0.5rem'
+        }
     },
+
     plugins: [],
 }
