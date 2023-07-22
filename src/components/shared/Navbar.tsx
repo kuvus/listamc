@@ -10,12 +10,12 @@ const Pages = [
         href: '/',
     },
     {
-        key: 'home',
+        key: 'search',
         text: 'Wyszukiwarka',
         href: '/search',
     },
     {
-        key: 'home',
+        key: 'account',
         text: 'Konto',
         href: '/account',
     },
@@ -26,7 +26,7 @@ export const Navbar: FunctionComponent = () => {
         <div className={'sticky top-0 backdrop-blur-md'}>
             <nav
                 className={
-                    'flex flex-wrap justify-between items-center max-w-7xl mx-auto gap-8 sm:gap-4 lg:gap-12 py-3'
+                    'flex flex-wrap justify-between items-center container max-w-7xl gap-8 sm:gap-4 lg:gap-12 py-3'
                 }>
                 <Link href={'/'}>
                     <Image
