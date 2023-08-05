@@ -4,10 +4,17 @@
 
 ListaMC.pl is a Minecraft server list that allows users to find new servers and rate them.
 
-## Getting Started
+## How to run
 
-First, run the development server:
+### Docker
+```bash
+docker build -t listamc .
+docker run -d -p 3000:3000 listamc
+```
 
+### Locally
+
+To run development server:
 ```bash
 npm run dev
 # or
@@ -15,3 +22,22 @@ yarn dev
 # or
 pnpm dev
 ```
+
+To run production server:
+```bash
+npm run build
+# or
+yarn build
+# or
+pnpm build
+```
+and
+```bash
+npm run start
+# or
+yarn start
+# or
+pnpm start
+```
+
+
