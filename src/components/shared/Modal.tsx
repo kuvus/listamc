@@ -3,12 +3,13 @@
 import { ComponentProps, useState } from 'react'
 import { Button } from '@/components/shared/Button'
 import { X } from 'lucide-react'
+import type { ButtonThemeVariations } from '@/components/shared/Button'
 
 interface ModalProps extends ComponentProps<'div'> {
     title: string
     children: React.ReactNode
     className?: string
-    buttonType: string
+    buttonType: ButtonThemeVariations
     buttonText: string
 }
 
@@ -29,24 +30,27 @@ export const Modal = ({
 
     return (
         <>
-            <Button type={buttonType} element={'button'} onClick={toggleOpen}>
+            <Button
+                styling={buttonType}
+                element={'button'}
+                onClick={toggleOpen}>
                 {buttonText}
             </Button>
             <div
-                className={`fixed top-0 left-0 right-0 z-40 ${
+                className={`fixed left-0 right-0 top-0 z-40 ${
                     isOpen ? 'block' : 'hidden'
-                } p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-screen max-h-full backdrop-blur-md justify-center items-center flex ${
+                } flex h-screen max-h-full items-center justify-center overflow-y-auto overflow-x-hidden p-4 backdrop-blur-md md:inset-0 ${
                     className || ''
                 }`}>
                 <div
                     className={
-                        'rounded bg-bg-900 container max-w-3xl min-h-[50vh] p-8 text-left z-50'
+                        'container z-50 min-h-[50vh] max-w-3xl rounded bg-bg-900 p-8 text-left'
                     }>
                     <div
                         className={
-                            'w-full float-right justify-between items-end flex mb-2'
+                            'float-right mb-2 flex w-full items-end justify-between'
                         }>
-                        <span className={'font-bold text-xl'}>{title}</span>
+                        <span className={'text-xl font-bold'}>{title}</span>
                         <div className={'hover:cursor-pointer'}>
                             <X onClick={toggleOpen} />
                         </div>
