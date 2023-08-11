@@ -1,3 +1,5 @@
+'use client'
+
 import { FunctionComponent } from 'react'
 import Link from 'next/link'
 
@@ -6,9 +8,11 @@ const ButtonThemes = {
     outline: 'text-text bg-semi-bg border border-semi-border',
 }
 
+type ButtonThemeVariations = 'primary' | 'outline'
+
 type ButtonProps = {
     children?: React.ReactNode
-    type: string
+    styling: ButtonThemeVariations
     size?: string
     onClick?: () => void
     href?: string
@@ -18,7 +22,7 @@ type ButtonProps = {
 
 export const Button: FunctionComponent<ButtonProps> = ({
     children,
-    type,
+    styling,
     size,
     onClick,
     href,
@@ -27,7 +31,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
 }) => {
     const classes = `px-8 py-2.5  rounded font-semibold inline-block text-base w-auto ${
         className || ''
-    } ${ButtonThemes[type] || ''}`
+    } ${ButtonThemes[styling] || ''}`
 
     if (element === 'a')
         return (
@@ -37,7 +41,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
         )
 
     return (
-        <button className={classes} onClick={onClick}>
+        <button className={classes} onClick={onClick} type={'button'}>
             {children}
         </button>
     )
