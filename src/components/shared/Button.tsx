@@ -8,7 +8,7 @@ const ButtonThemes = {
     outline: 'text-text bg-semi-bg border border-semi-border',
 }
 
-type ButtonThemeVariations = 'primary' | 'outline'
+export type ButtonThemeVariations = 'primary' | 'outline'
 
 type ButtonProps = {
     children?: React.ReactNode
