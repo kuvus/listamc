@@ -26,7 +26,7 @@ export const Navbar: FunctionComponent = () => {
         <div className={'sticky top-0 backdrop-blur-md'}>
             <nav
                 className={
-                    'flex flex-wrap justify-between items-center container max-w-7xl gap-8 sm:gap-4 lg:gap-12 py-3'
+                    'container flex max-w-7xl flex-wrap items-center justify-between gap-8 py-3 sm:gap-4 lg:gap-12'
                 }>
                 <Link href={'/'}>
                     <Image
@@ -38,7 +38,7 @@ export const Navbar: FunctionComponent = () => {
                 </Link>
                 <ul
                     className={
-                        'list-none gap-8 hidden font-semibold text-text md:flex'
+                        'hidden list-none gap-8 font-semibold text-text md:flex'
                     }>
                     {Pages.map(page => {
                         return (
@@ -49,7 +49,7 @@ export const Navbar: FunctionComponent = () => {
                     })}
                 </ul>
                 <Button
-                    type={'outline'}
+                    styling={'outline'}
                     size={''}
                     href={''}
                     element={'a'}
