@@ -14,7 +14,10 @@ export const Footer: FunctionComponent = () => {
                 width={64}
                 height={64}
             />
-            <div className={'flex flex-col md:flex-row text-center md:text-left gap-4 md:gap-12 text-sm'}>
+            <div
+                className={
+                    'flex flex-col md:flex-row text-center md:text-left gap-4 md:gap-12 text-sm'
+                }>
                 <Link href={'/terms'}>Dokumenty</Link>
                 <Link href={'/stats'}>Statystyki</Link>
                 <Link href={'/promo'}>Materiały promocyjne</Link>
