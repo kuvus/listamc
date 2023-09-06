@@ -4,6 +4,7 @@ import { Box, Heart, Users } from 'lucide-react'
 import ImgFallback from '@/components/shared/ImgFallback'
 import { Button } from '@/components/shared/Button'
 import { Modal } from '@/components/shared/Modal'
+import Card from '@/components/shared/Card'
 
 interface Data {
     id?: number
@@ -45,16 +46,21 @@ export default async function Server({ params: { serverId } }) {
     try {
         const data: Data = await getData(serverIdUrl)
 
+        const motd: string[] = data.ServerData?.motd_text.split('\\n') || [
+            data.address || '',
+            '',
+        ]
+
         return (
-            <div className={'flex flex-col gap-4 container xl:max-w-7xl mt-16'}>
-                <Card className={'justify-between items-center gap-4'}>
+            <section
+                className={'container mt-16 flex flex-col gap-4 xl:max-w-7xl'}>
+                <h1 className={'text-3xl font-semibold'}>{data.address}</h1>
+                <Card className={'items-center justify-between gap-4'}>
                     <div className={'flex flex-col'}>
                         <span className={'text-lg font-semibold'}>
-                            {data?.address}
+                            {motd[0]}
                         </span>
-                        <span className={'text-lg break-all'}>
-                            {data.ServerData?.motd_text}
-                        </span>
+                        <span className={'break-all text-lg'}>{motd[1]}</span>
                     </div>
                     <ImgFallback
                         src={data.ServerData?.icon}
@@ -65,18 +71,18 @@ export default async function Server({ params: { serverId } }) {
                         height={64}
                     />
                 </Card>
-                <div className={'flex flex-row gap-4 flex-wrap lg:flex-nowrap'}>
-                    <div className={'flex flex-col gap-4 w-full'}>
+                <div className={'flex flex-row flex-wrap gap-4 lg:flex-nowrap'}>
+                    <div className={'flex w-full flex-col gap-4'}>
                         <div
                             className={
-                                'hidden md:flex flex-row gap-4 columns-3'
+                                'hidden columns-3 flex-row gap-4 md:flex'
                             }>
-                            <Card className={'justify-between items-center'}>
+                            <Card className={'items-center justify-between'}>
                                 <div className={'flex flex-col'}>
                                     <span>Liczba graczy</span>
                                     <span
                                         className={
-                                            'text-4xl mt-1 font-semibold'
+                                            'mt-1 text-4xl font-semibold'
                                         }>
                                         {data.ServerData?.players_online}/
                                         {data.ServerData?.players_max}
@@ -84,24 +90,24 @@ export default async function Server({ params: { serverId } }) {
                                 </div>
                                 <Users size={64} />
                             </Card>
-                            <Card className={'justify-between items-center'}>
+                            <Card className={'items-center justify-between'}>
                                 <div className={'flex flex-col'}>
                                     <span>Wersja</span>
                                     <span
                                         className={
-                                            'text-4xl mt-1 font-semibold'
+                                            'mt-1 text-4xl font-semibold'
                                         }>
                                         {data.ServerData?.version}
                                     </span>
                                 </div>
                                 <Box size={64} />
                             </Card>
-                            <Card className={'justify-between items-center'}>
+                            <Card className={'items-center justify-between'}>
                                 <div className={'flex flex-col'}>
                                     <span>Głosy</span>
                                     <span
                                         className={
-                                            'text-4xl mt-1 font-semibold'
+                                            'mt-1 text-4xl font-semibold'
                                         }>
                                         {data._count?.Vote}
                                     </span>
@@ -109,16 +115,42 @@ export default async function Server({ params: { serverId } }) {
                                 <Heart size={64} />
                             </Card>
                         </div>
-                        <Card className={'flex-col h-full justify-between'}>
+                        <Card
+                            className={
+                                'h-full flex-col justify-between gap-2 md:hidden'
+                            }>
+                            <div className={'flex flex-row justify-between'}>
+                                <div className={'flex items-center gap-2'}>
+                                    <Users size={16} /> Liczba graczy
+                                </div>
+                                <span>
+                                    {data.ServerData?.players_online}/
+                                    {data.ServerData?.players_max}
+                                </span>
+                            </div>
+                            <div className={'flex flex-row justify-between'}>
+                                <div className={'flex items-center gap-2'}>
+                                    <Box size={16} /> Wersja
+                                </div>
+                                <span>{data.ServerData?.version}</span>
+                            </div>
+                            <div className={'flex flex-row justify-between'}>
+                                <div className={'flex items-center gap-2'}>
+                                    <Heart size={16} /> Głosy
+                                </div>
+                                <span>{data._count?.Vote}</span>
+                            </div>
+                        </Card>
+                        <Card className={'h-full flex-col justify-between'}>
                             <div
                                 className={
-                                    'border-b w-full border-b-semi-border pb-3 mb-3'
+                                    'mb-3 w-full border-b border-b-semi-border pb-3'
                                 }>
                                 <span className={'text-xl'}>Opis serwera</span>
                             </div>
                             <div
                                 className={
-                                    'border-b w-full border-b-semi-border pb-3 mb-3'
+                                    'mb-3 w-full border-b border-b-semi-border pb-3'
                                 }>
                                 <span className={'text-xl'}>
                                     Przydatne linki
@@ -128,7 +160,7 @@ export default async function Server({ params: { serverId } }) {
                     </div>
                     <Card
                         className={
-                            'w-full lg:w-1/3 flex-col items-center justify-center text-center gap-3 h-full py-8'
+                            'h-full w-full flex-col items-center justify-center gap-3 py-8 text-center lg:w-1/3'
                         }>
                         <span className={'text-2xl font-bold'}>
                             Oddaj głos na serwer
@@ -137,7 +169,7 @@ export default async function Server({ params: { serverId } }) {
                             Każdy oddany głos podnosi pozycję serwera na liście.
                         </span>
                         <Button
-                            type={'primary'}
+                            styling={'primary'}
                             element={'button'}
                             className={'my-5'}>
                             Zagłosuj na serwer
@@ -149,7 +181,7 @@ export default async function Server({ params: { serverId } }) {
                 </div>
                 <Card
                     className={
-                        'bg-semi-promoted text-center md:text-left justify-center md:justify-between items-center flex flex-wrap md:flex-nowrap gap-4'
+                        'flex flex-wrap items-center justify-center gap-4 bg-semi-promoted text-center md:flex-nowrap md:justify-between md:text-left'
                     }>
                     <span className={'text-xl font-semibold'}>
                         Wykup promowanie tego serwera za jedyne 50gr za dzień!
@@ -161,10 +193,10 @@ export default async function Server({ params: { serverId } }) {
                         Test
                     </Modal>
                 </Card>
-                <div className={'flex flex-row gap-4 flex-wrap lg:flex-nowrap'}>
+                <div className={'flex flex-row flex-wrap gap-4 lg:flex-nowrap'}>
                     <Card>Statystyki</Card>
-                    <div className={'flex flex-col gap-4 w-full lg:w-1/3'}>
-                        <Card className={'gap-6 flex-col text-center py-10'}>
+                    <div className={'flex w-full flex-col gap-4 lg:w-1/3'}>
+                        <Card className={'flex-col gap-6 py-10 text-center'}>
                             <span className={'text-xl'}>
                                 Jesteś właścicielem tego serwera?
                             </span>
@@ -172,7 +204,7 @@ export default async function Server({ params: { serverId } }) {
                                 title={'Przypisanie serwera do konta'}
                                 buttonType={'outline'}
                                 buttonText={'Przypisz serwer do konta'}>
-                                <div className='flex w-full relative'>
+                                <div className='relative flex w-full'>
                                     <input
                                         type='radio'
                                         id='option0'
@@ -181,7 +213,7 @@ export default async function Server({ params: { serverId } }) {
                                     />
                                     <label
                                         htmlFor='option0'
-                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        className='flex w-1/6 cursor-pointer select-none items-center justify-center truncate rounded-full py-2 text-lg font-semibold uppercase'>
                                         OPTION 0
                                     </label>
 
@@ -193,7 +225,7 @@ export default async function Server({ params: { serverId } }) {
                                     />
                                     <label
                                         htmlFor='option1'
-                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        className='flex w-1/6 cursor-pointer select-none items-center justify-center truncate rounded-full py-2 text-lg font-semibold uppercase'>
                                         OPTION 1
                                     </label>
 
@@ -205,7 +237,7 @@ export default async function Server({ params: { serverId } }) {
                                     />
                                     <label
                                         htmlFor='option2'
-                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        className='flex w-1/6 cursor-pointer select-none items-center justify-center truncate rounded-full py-2 text-lg font-semibold uppercase'>
                                         OPTION 2
                                     </label>
 
@@ -217,7 +249,7 @@ export default async function Server({ params: { serverId } }) {
                                     />
                                     <label
                                         htmlFor='option3'
-                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        className='flex w-1/6 cursor-pointer select-none items-center justify-center truncate rounded-full py-2 text-lg font-semibold uppercase'>
                                         OPTION 3
                                     </label>
 
@@ -229,15 +261,15 @@ export default async function Server({ params: { serverId } }) {
                                     />
                                     <label
                                         htmlFor='option4'
-                                        className='cursor-pointer w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full py-2'>
+                                        className='flex w-1/6 cursor-pointer select-none items-center justify-center truncate rounded-full py-2 text-lg font-semibold uppercase'>
                                         OPTION 4
                                     </label>
 
-                                    <div className='w-1/6 flex items-center justify-center truncate uppercase select-none font-semibold text-lg rounded-full p-0 h-full bg-indigo-600 absolute transform transition-transform tabAnim'></div>
+                                    <div className='tabAnim absolute flex h-full w-1/6 transform select-none items-center justify-center truncate rounded-full bg-indigo-600 p-0 text-lg font-semibold uppercase transition-transform'></div>
                                 </div>
                             </Modal>
                         </Card>
-                        <Card className={'gap-6 flex-col text-center py-10'}>
+                        <Card className={'flex-col gap-6 py-10 text-center'}>
                             <span className={'text-xl'}>
                                 Dodaj widget ListaMC.pl na swoją stronę
                                 internetową!
@@ -251,28 +283,12 @@ export default async function Server({ params: { serverId } }) {
                         </Card>
                     </div>
                 </div>
-            </div>
+            </section>
         )
     } catch (e) {
         console.log(e)
         notFound()
     }
-}
-
-interface CardProps extends ComponentProps<'div'> {
-    className?: string
-}
-
-const Card = ({ children, className, ...props }: CardProps) => {
-    return (
-        <div
-            className={`rounded bg-semi-bg border border-semi-border px-6 py-4 w-full flex ${
-                className || ''
-            }`}
-            {...props}>
-            {children}
-        </div>
-    )
 }
 
 const getData = async (id: string) => {

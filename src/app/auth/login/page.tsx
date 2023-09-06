@@ -1,22 +1,13 @@
-'use client'
-
-import { useSession, signIn, signOut } from 'next-auth/react'
-// import { getServerSession } from 'next-auth'
-// import { handler } from '@/app/api/auth/[...nextauth]/route'
+// import { useSession, signIn, signOut } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
+import { handler } from '@/app/api/auth/[...nextauth]/route'
+import { LoginButton, LogoutButton } from '@/components/auth/AuthButtons'
 
 export default async function Login() {
-    const { data: session, status } = useSession()
-    // const session = await getServerSession(handler)
+    // const { data: session, status } = useSession()
+    const session = await getServerSession(handler)
 
     console.log(session)
 
-    return (
-        <div>
-            {!session ? (
-                <button onClick={() => signIn()}>Zaloguj się</button>
-            ) : (
-                <button onClick={() => signOut()}>Wyloguj się</button>
-            )}
-        </div>
-    )
+    return <div>{!session ? <LoginButton /> : <LogoutButton />}</div>
 }

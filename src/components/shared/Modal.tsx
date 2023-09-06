@@ -41,7 +41,8 @@ export const Modal = ({
                     isOpen ? 'block' : 'hidden'
                 } flex h-screen max-h-full items-center justify-center overflow-y-auto overflow-x-hidden p-4 backdrop-blur-md md:inset-0 ${
                     className || ''
-                }`}>
+                }`}
+                {...props}>
                 <div
                     className={
                         'container z-50 min-h-[50vh] max-w-3xl rounded bg-bg-900 p-8 text-left'

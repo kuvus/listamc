@@ -34,56 +34,46 @@ export const ServerListItem: FunctionComponent<ServerListItemProps> = ({
 }) => {
     return (
         <Link href={`/s/${id}-${address.replaceAll('.', '_')}`}>
-            <div
-                className={`px-3 md:px-4 py-3 border border-semi-border rounded text-xl hover:cursor-pointer flex flex-col gap-2 ${
+            <article
+                className={`grid w-full grid-cols-1 gap-4 rounded border border-semi-border px-3 py-3 text-xl md:grid-cols-12 md:px-4 ${
                     promoted ? 'bg-semi-promoted' : 'bg-semi-bg'
                 }`}>
+                <div className={'col-span-1 flex items-center gap-4'}>
+                    <ImgFallback
+                        src={img}
+                        fallback={'/assets/listamc-64x64.png'}
+                        alt={''}
+                        className={'h-8 w-8 rounded lg:h-16 lg:w-16'}
+                    />
+                    <span className={'inline md:hidden'}>{address}</span>
+                </div>
+                <div className={'col-span-7 flex flex-col'}>
+                    <span className={'hidden md:inline'}>{address}</span>
+                    <span className={'truncate'}>{motd.join(' ')}</span>
+                </div>
                 <div
                     className={
-                        'flex flex-col gap-2 md:gap-4 md:flex-row justify-between flex-wrap'
+                        'col-span-2 flex items-center gap-2 md:justify-end'
                     }>
-                    <div
-                        className={'flex gap-2 md:gap-8 flex-row items-center'}>
-                        <ImgFallback
-                            src={img}
-                            fallback={'/assets/listamc-64x64.png'}
-                            alt={''}
-                            className={'rounded w-8 h-8 md:w-16 md:h-16'}
-                        />
-                        <div className={'flex flex-col justify-center'}>
-                            <span>{address}</span>
-                            <span className={'hidden md:inline'}>
-                                {motd.join(' ')}
-                            </span>
-                        </div>
+                    <span>{votes}</span>
+                    <Heart size={20} />
+                </div>
+                <div
+                    className={
+                        'col-span-2 flex flex-row items-end justify-center gap-4 md:flex-col md:gap-0'
+                    }>
+                    <div className={'flex items-center gap-2'}>
+                        <span>{version}</span>
+                        <StatusIndicator status={online} />
                     </div>
-                    <div
-                        className={
-                            'flex flex-row flex-wrap gap-4 md:gap-16 md:justify-between'
-                        }>
-                        <div className={'flex gap-2 items-center'}>
-                            <span>{votes}</span>
-                            <Heart size={20} />
-                        </div>
-                        <div
-                            className={
-                                'flex flex-row gap-4 md:gap-0 md:flex-col items-end justify-center'
-                            }>
-                            <div className={'flex gap-2 items-center'}>
-                                <span>{version}</span>
-                                <StatusIndicator status={online} />
-                            </div>
-                            <div className={'flex gap-2 items-center'}>
-                                <span>
-                                    {players[0]}/{players[1]}
-                                </span>
-                                <Users size={20} />
-                            </div>
-                        </div>
+                    <div className={'flex items-center gap-2'}>
+                        <span>
+                            {players[0]}/{players[1]}
+                        </span>
+                        <Users size={20} />
                     </div>
                 </div>
-                <span className={'md:hidden'}>{motd.join(' ')}</span>
-            </div>
+            </article>
         </Link>
     )
 }

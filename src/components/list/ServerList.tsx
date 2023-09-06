@@ -18,7 +18,7 @@ export const ServerList: FunctionComponent<ServerListProps> = async ({
         if (promoted)
             return (
                 <div
-                    className={`px-8 py-3  min-h-fit flex justify-center items-center text-center border border-semi-border rounded text-2xl bg-semi-promoted`}>
+                    className={`mt-4 flex min-h-fit  items-center justify-center rounded border border-semi-border bg-semi-promoted px-8 py-3 text-center text-2xl`}>
                     Chcesz zareklamować swój serwer? <br /> Wykup promowanie za
                     jedyne 50gr za dzień!
                 </div>
@@ -26,7 +26,7 @@ export const ServerList: FunctionComponent<ServerListProps> = async ({
         else
             return (
                 <div
-                    className={`px-8 py-7  min-h-fit flex justify-center items-center text-center border border-semi-border rounded text-2xl bg-semi-bg`}>
+                    className={`mt-4 flex min-h-fit  items-center justify-center rounded border border-semi-border bg-semi-bg px-8 py-7 text-center text-2xl`}>
                     Aż tyle serwerów jeszcze nie mamy :(
                 </div>
             )
