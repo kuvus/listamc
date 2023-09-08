@@ -51,7 +51,7 @@ export const Navbar: FunctionComponent = () => {
                 <Button
                     styling={'outline'}
                     size={''}
-                    href={''}
+                    href={'add'}
                     element={'a'}
                     className={'hidden md:inline-block'}>
                     Dodaj swój serwer
