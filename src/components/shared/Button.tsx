@@ -18,6 +18,9 @@ type ButtonProps = {
     href?: string
     element: string
     className?: string
+    scroll?: boolean
+    replace?: boolean
+    prefetch?: boolean
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
@@ -28,6 +31,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
     href,
     element,
     className,
+    ...props
 }) => {
     const classes = `px-8 py-2.5  rounded font-semibold inline-block text-base w-auto ${
         className || ''
@@ -35,13 +39,17 @@ export const Button: FunctionComponent<ButtonProps> = ({
 
     if (element === 'a')
         return (
-            <Link className={classes} href={`${href}`}>
+            <Link className={classes} href={`${href}`} {...props}>
                 <span>{children}</span>
             </Link>
         )
 
     return (
-        <button className={classes} onClick={onClick} type={'button'}>
+        <button
+            className={classes}
+            onClick={onClick}
+            type={'button'}
+            {...props}>
             {children}
         </button>
     )
