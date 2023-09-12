@@ -93,11 +93,12 @@ model ServerHistory {
 }
 
 model Promotion {
-  id         String   @id @default(uuid())
-  server_id  Int      @unique
-  date_start DateTime
-  date_end   DateTime
-  server     Server   @relation(fields: [server_id], references: [id])
+  id           String         @id @default(uuid())
+  server_id    Int            @unique
+  date_start   DateTime
+  date_end     DateTime
+  server       Server         @relation(fields: [server_id], references: [id])
+  transactions Transactions[]
 }
 
 model Vote {
@@ -122,4 +123,13 @@ model ServerMetadata {
   gamemodes   Json
   urls        Json
   server      Server @relation(fields: [server_id], references: [id])
+}
+
+model Transactions {
+  id           String    @id @default(uuid())
+  user_id      String
+  promotion_id String
+  amount       Int
+  date         DateTime  @default(now())
+  promotion    Promotion @relation(fields: [promotion_id], references: [id])
 }
