@@ -7,7 +7,6 @@ export async function GET(
     request: NextRequest,
     { params }: { params: { slug: string[] } }
 ) {
-    console.log(params.slug)
     if (params.slug.length !== 4 && params.slug[0] !== 'count')
         return NextResponse.json(
             { error: 'Invalid number of parameters' },
