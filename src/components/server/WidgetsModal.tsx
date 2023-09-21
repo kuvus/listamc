@@ -1,9 +1,12 @@
 import { Modal } from '@/components/shared/Modal'
+import { Suspense } from 'react'
 
 export const WidgetsModal = () => {
     return (
-        <Modal name={'widgets'} title={'Widgety'}>
-            Test
-        </Modal>
+        <Suspense>
+            <Modal name={'widgets'} title={'Widgety'}>
+                Test
+            </Modal>
+        </Suspense>
     )
 }

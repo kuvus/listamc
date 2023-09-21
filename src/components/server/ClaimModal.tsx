@@ -1,9 +1,12 @@
 import { Modal } from '@/components/shared/Modal'
+import { Suspense } from 'react'
 
 export const ClaimModal = () => {
     return (
-        <Modal name={'claim'} title={'Przypisanie serwera do konta'}>
-            test
-        </Modal>
+        <Suspense>
+            <Modal name={'claim'} title={'Przypisanie serwera do konta'}>
+                test
+            </Modal>
+        </Suspense>
     )
 }

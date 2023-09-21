@@ -42,13 +42,13 @@ export const Modal = ({
     return (
         <>
             <dialog
-                className={`min-h-[50vh] w-1/2 rounded bg-bg-900 p-8 text-text outline-0 backdrop:bg-bg-900 backdrop:bg-opacity-50 backdrop:backdrop-blur-sm active:outline-0`}
+                className={`active:outline-0} min-h-[50vh] w-1/2 rounded bg-bg-900 p-8 text-text outline-0 backdrop:bg-bg-900 backdrop:bg-opacity-50 backdrop:backdrop-blur-sm`}
                 {...props}
                 ref={modalRef}
                 onClose={handleClose}>
                 <div className={'flex flex-col gap-2'}>
-                    <div className={'flex flex-row justify-between'}>
-                        <h2 className={'text-xl font-bold'}>{title}</h2>
+                    <div className={'mb-4 flex flex-row justify-between'}>
+                        <h2 className={'text-xl font-semibold'}>{title}</h2>
                         <Link href={pathname} scroll={false}>
                             <X />
                         </Link>
