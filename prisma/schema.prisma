@@ -66,6 +66,7 @@ model Server {
   ServerData     ServerData?
   Promotion      Promotion?
   Vote           Vote[]
+  Transactions   Transactions[]
   ServerMetadata ServerMetadata?
 
   @@unique([address])
@@ -93,12 +94,11 @@ model ServerHistory {
 }
 
 model Promotion {
-  id           String         @id @default(uuid())
-  server_id    Int            @unique
-  date_start   DateTime
-  date_end     DateTime
-  server       Server         @relation(fields: [server_id], references: [id])
-  transactions Transactions[]
+  id         String   @id @default(uuid())
+  server_id  Int      @unique
+  date_start DateTime @default(now())
+  date_end   DateTime
+  server     Server   @relation(fields: [server_id], references: [id])
 }
 
 model Vote {
@@ -126,10 +126,13 @@ model ServerMetadata {
 }
 
 model Transactions {
-  id           String    @id @default(uuid())
-  user_id      String
-  promotion_id String
+  id           String   @id
+  user_id      String?
+  server_id    Int
   amount       Int
-  date         DateTime  @default(now())
-  promotion    Promotion @relation(fields: [promotion_id], references: [id])
+  email        String?
+  payment_type String?
+  state        Int      @default(0)
+  date         DateTime @default(now())
+  Server       Server   @relation(fields: [server_id], references: [id])
 }
