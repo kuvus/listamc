@@ -1,9 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
-import type { ComponentProps } from 'react'
 import { Box, Heart, Users } from 'lucide-react'
 import ImgFallback from '@/components/shared/ImgFallback'
 import { Button } from '@/components/shared/Button'
-import { Modal } from '@/components/shared/Modal'
 import Card from '@/components/shared/Card'
 import { PromoteModal } from '@/components/server/PromoteModal'
 import { WidgetsModal } from '@/components/server/WidgetsModal'
@@ -245,9 +243,10 @@ export default async function Server({ params: { serverId } }) {
 
 const getData = async (id: string) => {
     const res = await fetch(`${process.env.API_URL}/server/${id}`, {
-        next: { revalidate: 10 },
+        next: { revalidate: 30 },
     })
-    // TODO: zmień revalidate na większe (teraz 10s)
+    // TODO: zmień revalidate na większe (teraz 30s)
+    // Chyba nie trzeba zmieniać
 
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
