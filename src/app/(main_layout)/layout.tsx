@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import { NextAuthProvider } from '@/app/providers'
 
-import './global.css'
+import '../global.css'
 
 import { Nunito } from 'next/font/google'
-import * as process from 'process'
 import { Navbar } from '@/components/shared/Navbar'
 import { Footer } from '@/components/shared/Footer'
 
@@ -28,10 +27,10 @@ export default function RootLayout({
     return (
         <html lang='pl'>
             <body
-                className={`${nunito.variable} ${nunito.className} bg-gradient-radial from-bg-800 to-bg-900 text-text bg-fixed`}>
+                className={`${nunito.variable} ${nunito.className} bg-gradient-radial from-bg-800 to-bg-900 bg-fixed text-text`}>
                 <NextAuthProvider>
                     <Navbar />
-                    <main className={'min-h-max'}>{children}</main>
+                    <main className={'min-h-[40vh]'}>{children}</main>
                     <Footer />
                 </NextAuthProvider>
             </body>

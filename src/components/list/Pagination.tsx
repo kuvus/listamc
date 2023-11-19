@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react'
+import { ComponentProps, FunctionComponent } from 'react'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -6,10 +6,9 @@ interface PaginationProps {
     current: number
 }
 
-interface PaginationButtonProps {
+interface PaginationButtonProps extends ComponentProps<'a'> {
     children: React.ReactNode
     active: boolean
-    key: number
     href: string
 }
 
@@ -62,16 +61,17 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
     if (children === '...')
         return (
             <span
-                className={`flex items-center justify-center h-11 px-4 py-2 border border-semi-border rounded ${
+                className={`flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 ${
                     active ? 'bg-semi-promoted' : 'bg-semi-bg'
-                }`}>
+                }`}
+                key={key}>
                 {children}
             </span>
         )
     return (
         <Link href={href} key={key}>
             <span
-                className={`flex items-center justify-center h-11 px-4 py-2 border border-semi-border rounded hover:cursor-pointer hover:bg-semi-promoted ${
+                className={`flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 hover:cursor-pointer hover:bg-semi-promoted ${
                     active ? 'bg-semi-promoted' : 'bg-semi-bg'
                 }`}>
                 {children}
@@ -89,7 +89,7 @@ export const Pagination: FunctionComponent<PaginationProps> = async ({
     if (d.length == 2 && d[0] == d[1]) d.pop()
 
     return (
-        <div className={'flex gap-2 mt-12 justify-center'}>
+        <div className={'mt-12 flex justify-center gap-2'}>
             <PaginationButton
                 key={-20}
                 href={`/p/${current !== 1 ? current - 1 : 1}`}

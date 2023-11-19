@@ -11,10 +11,10 @@ export type { TagProps }
 
 export const Tag: FunctionComponent<TagProps> = ({ tag, normalized }) => {
     return (
-        <Link href={`/tag/${normalized}`}>
+        <Link href={`?tag=${normalized}`}>
             <div
                 className={
-                    'px-6 py-2 flex gap-1 bg-semi-bg border border-semi-border rounded items-center'
+                    'flex items-center gap-1 whitespace-nowrap rounded border border-semi-border bg-semi-bg px-6 py-2'
                 }>
                 <Hash size={18} />
                 {tag}

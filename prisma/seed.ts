@@ -80,6 +80,86 @@ async function main() {
             date_end: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
         },
     })
+
+    await prisma.serverMetadata.upsert({
+        where: {
+            server_id: server.id,
+        },
+        update: {},
+        create: {
+            server_id: server.id,
+            gamemodes: [
+                {
+                    type: 'SKYBLOCK',
+                    name: 'SkyBlock',
+                },
+                {
+                    type: 'WATERBLOCK',
+                    name: 'WaterBlock',
+                },
+            ],
+        },
+    })
+
+    await prisma.serverMetadata.upsert({
+        where: {
+            server_id: server2.id,
+        },
+        update: {},
+        create: {
+            server_id: server2.id,
+            gamemodes: [
+                {
+                    type: 'SKYBLOCK',
+                    name: 'SkyBlock',
+                },
+                {
+                    type: 'WATERBLOCK',
+                    name: 'WaterBlock',
+                },
+                {
+                    type: 'CREATIVE',
+                    name: 'Creative',
+                },
+                {
+                    type: 'FREEBUILD',
+                    name: 'FreeBuild',
+                },
+                {
+                    type: 'JAIL',
+                    name: 'Jail',
+                },
+                {
+                    type: 'PVP',
+                    name: 'PvP',
+                },
+                {
+                    type: 'PVPCHESTS',
+                    name: 'PvP Chests',
+                },
+                {
+                    type: 'SURVIVAL',
+                    name: 'Survival',
+                },
+                {
+                    type: 'MEGADROP',
+                    name: 'MegaDrop',
+                },
+                {
+                    type: 'HARDCORE',
+                    name: 'Hardcore',
+                },
+                {
+                    type: 'SKYWARS',
+                    name: 'SkyWars',
+                },
+                {
+                    type: 'BEDWARS',
+                    name: 'BedWars',
+                },
+            ],
+        },
+    })
 }
 
 main()

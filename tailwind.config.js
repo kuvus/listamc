@@ -6,7 +6,7 @@ module.exports = {
             colors: {
                 text: '#DDEEEE',
                 bg: {
-                    800: '#030926 ',
+                    800: '#030926',
                     900: '#000212',
                 },
                 semi: {
@@ -31,5 +31,5 @@ module.exports = {
         },
     },
 
-    plugins: [require('@tailwindcss/forms')],
+    plugins: [require('@tailwindcss/forms'), require('tailwind-scrollbar')],
 }

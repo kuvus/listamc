@@ -14,18 +14,28 @@ const Tags: TagProps[] = [
     },
 ]
 
-export const TagList: FunctionComponent = () => {
+export const TagList: FunctionComponent = async () => {
+    const tags = await getData()
     return (
-        <div className={'flex gap-4 overflow-auto mt-8'}>
-            {Tags.map(tag => {
+        <div className={'h scrollbar-thin mt-8 flex gap-4 overflow-x-auto'}>
+            {tags.map(tag => {
                 return (
-                    <Tag
-                        tag={tag.tag}
-                        normalized={tag.normalized}
-                        key={tag.normalized}
-                    />
+                    <Tag tag={tag.name} normalized={tag.type} key={tag.type} />
                 )
             })}
         </div>
     )
+}
+
+const getData = async () => {
+    const res = await fetch(`${process.env.API_URL}/tags`, {
+        next: { revalidate: 1800 },
+    })
+
+    if (!res.ok) {
+        // This will activate the closest `error.js` Error Boundary
+        throw new Error('Failed to fetch data')
+    }
+
+    return res.json()
 }

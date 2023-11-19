@@ -1,15 +1,24 @@
 declare global {
     namespace NodeJS {
         interface ProcessEnv {
+            DATABASE_URL: string
+            API_URL: string
+            NEXT_PUBLIC_API_URL: string
+            NEXT_PUBLIC_PAGE_URL: string
             NEXT_PUBLIC_PAGE_NAME: string
             NEXT_PUBLIC_PAGE_DESCRIPTION: string
-            NEXT_PUBLIC_API_URL: string
-            API_URL: string
-            DATABASE_URL: string
             NEXTAUTH_URL: string
             NEXTAUTH_SECRET: string
+            JWT_SECRET: string
             GOOGLE_CLIENT_ID: string
             GOOGLE_CLIENT_SECRET: string
+            DISCORD_CLIENT_ID: string
+            DISCORD_CLIENT_SECRET: string
+            PBL_SHOP_ID: number
+            PBL_SECRET: string
+            NEXT_PUBLIC_LOGFLARE_API_KEY: string
+            NEXT_PUBLIC_LOGFLARE_SOURCE_TOKEN: string
+            NOPROXY_API_KEY: string
         }
     }
 }

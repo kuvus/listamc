@@ -6,7 +6,8 @@ import Card from '@/components/shared/Card'
 import { PromoteModal } from '@/components/server/PromoteModal'
 import { WidgetsModal } from '@/components/server/WidgetsModal'
 import { VoteModal } from '@/components/server/VoteModal'
-import { ClaimModal } from '@/components/server/ClaimModal'
+import jwt from '@/components/shared/Jwt'
+import Link from 'next/link'
 
 interface Data {
     id?: number
@@ -52,6 +53,8 @@ export default async function Server({ params: { serverId } }) {
             data.address || '',
             '',
         ]
+
+        const voteToken = jwt({ serverId: data.id, type: 'vote' })
 
         return (
             <section
@@ -144,20 +147,36 @@ export default async function Server({ params: { serverId } }) {
                             </div>
                         </Card>
                         <Card className={'h-full flex-col justify-between'}>
-                            <div
-                                className={
-                                    'mb-3 w-full border-b border-b-semi-border pb-3'
-                                }>
-                                <span className={'text-xl'}>Opis serwera</span>
-                            </div>
-                            <div
-                                className={
-                                    'mb-3 w-full border-b border-b-semi-border pb-3'
-                                }>
-                                <span className={'text-xl'}>
-                                    Przydatne linki
-                                </span>
-                            </div>
+                            {data.ServerMetadata?.description && (
+                                <div
+                                    className={`${
+                                        data.ServerMetadata?.urls?.length > 0 &&
+                                        'border-b border-b-semi-border'
+                                    } mb-3 w-full pb-3`}>
+                                    <span className={'text-xl'}>
+                                        Opis serwera
+                                    </span>
+                                </div>
+                            )}
+                            {data.ServerMetadata?.urls?.length > 0 && (
+                                <div className={'mb-3 w-full pb-3'}>
+                                    <span className={'text-xl'}>
+                                        Przydatne linki
+                                    </span>
+                                    {data.ServerMetadata?.urls.map(
+                                        (url: {
+                                            type: string
+                                            value: string
+                                        }) => (
+                                            <Link
+                                                href={url.value}
+                                                key={url.type}>
+                                                {url.type}
+                                            </Link>
+                                        )
+                                    )}
+                                </div>
+                            )}
                         </Card>
                     </div>
                     <Card
@@ -202,18 +221,18 @@ export default async function Server({ params: { serverId } }) {
                 <div className={'flex flex-row flex-wrap gap-4 lg:flex-nowrap'}>
                     <Card>Statystyki</Card>
                     <div className={'flex w-full flex-col gap-4 lg:w-1/3'}>
-                        <Card className={'flex-col gap-6 py-10 text-center'}>
-                            <span className={'text-xl'}>
-                                Jesteś właścicielem tego serwera?
-                            </span>
-                            <Button
-                                styling={'outline'}
-                                element={'a'}
-                                href={'?m=claim'}
-                                scroll={false}>
-                                Przypisz serwer do konta
-                            </Button>
-                        </Card>
+                        {/*<Card className={'flex-col gap-6 py-10 text-center'}>*/}
+                        {/*    <span className={'text-xl'}>*/}
+                        {/*        Jesteś właścicielem tego serwera?*/}
+                        {/*    </span>*/}
+                        {/*    <Button*/}
+                        {/*        styling={'outline'}*/}
+                        {/*        element={'a'}*/}
+                        {/*        href={'?m=claim'}*/}
+                        {/*        scroll={false}>*/}
+                        {/*        Przypisz serwer do konta*/}
+                        {/*    </Button>*/}
+                        {/*</Card>*/}
                         <Card className={'flex-col gap-6 py-10 text-center'}>
                             <span className={'text-xl'}>
                                 Dodaj widget ListaMC.pl na swoją stronę
@@ -222,17 +241,16 @@ export default async function Server({ params: { serverId } }) {
                             <Button
                                 styling={'outline'}
                                 element={'a'}
-                                href={'?m=widgets'}
+                                href={'?m=widget'}
                                 scroll={false}>
                                 Przeglądaj widgety
                             </Button>
                         </Card>
                     </div>
                 </div>
-                <VoteModal />
-                <ClaimModal />
+                <VoteModal token={voteToken} />
                 <PromoteModal />
-                <WidgetsModal />
+                <WidgetsModal serverId={serverIdUrl} />
             </section>
         )
     } catch (e) {
@@ -245,11 +263,8 @@ const getData = async (id: string) => {
     const res = await fetch(`${process.env.API_URL}/server/${id}`, {
         next: { revalidate: 30 },
     })
-    // TODO: zmień revalidate na większe (teraz 30s)
-    // Chyba nie trzeba zmieniać
 
     if (!res.ok) {
-        // This will activate the closest `error.js` Error Boundary
         throw new Error('Failed to fetch data')
     }
 

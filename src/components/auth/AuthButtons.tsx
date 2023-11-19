@@ -2,31 +2,41 @@
 
 import { signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
+import { Button } from '@/components/shared/Button'
+import { SiGoogle, SiDiscord } from '@icons-pack/react-simple-icons'
 
-export const LoginButton = () => {
+export const SignInButton = ({ providerName, providerID, key }) => {
+    const Icon = ({ providerID }) => {
+        switch (providerID) {
+            case 'google':
+                return <SiGoogle />
+            case 'discord':
+                return <SiDiscord />
+            default:
+                return <></>
+        }
+    }
+
     return (
-        <button style={{ marginRight: 10 }} onClick={() => signIn()}>
-            Sign in
-        </button>
+        <Button
+            element={'button'}
+            styling={'outline'}
+            onClick={() => signIn(providerID)}
+            key={key}
+            className={'inline-flex flex-row justify-center gap-4'}>
+            <Icon providerID={providerID} />
+            Zaloguj się z {providerName}
+        </Button>
     )
 }
 
-export const RegisterButton = () => {
+export const SignOutButton = () => {
     return (
-        <Link href='/register' style={{ marginRight: 10 }}>
-            Register
-        </Link>
+        <Button
+            element={'button'}
+            styling={'outline'}
+            onClick={() => signOut()}>
+            Wyloguj się
+        </Button>
     )
-}
-
-export const LogoutButton = () => {
-    return (
-        <button style={{ marginRight: 10 }} onClick={() => signOut()}>
-            Sign Out
-        </button>
-    )
-}
-
-export const ProfileButton = () => {
-    return <Link href='/profile'>Profile</Link>
 }
