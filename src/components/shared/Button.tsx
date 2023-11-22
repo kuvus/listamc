@@ -21,6 +21,7 @@ type ButtonProps = {
     scroll?: boolean
     replace?: boolean
     prefetch?: boolean
+    type?: 'button' | 'submit' | 'reset'
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
