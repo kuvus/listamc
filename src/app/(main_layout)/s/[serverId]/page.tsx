@@ -49,6 +49,8 @@ export default async function Server({ params: { serverId } }) {
     try {
         const data: Data = await getData(serverIdUrl)
 
+        if (!data.id) notFound()
+
         const motd: string[] = data.ServerData?.motd_text.split('\\n') || [
             data.address || '',
             '',
@@ -248,13 +250,13 @@ export default async function Server({ params: { serverId } }) {
                         </Card>
                     </div>
                 </div>
-                <VoteModal token={voteToken} />
+                <VoteModal token={voteToken} serverId={data.id} />
                 <PromoteModal />
                 <WidgetsModal serverId={serverIdUrl} />
             </section>
         )
     } catch (e) {
-        console.log(e)
+        // console.log(e)
         notFound()
     }
 }
