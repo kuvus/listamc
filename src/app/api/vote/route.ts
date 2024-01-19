@@ -6,7 +6,7 @@ import md5 from 'md5'
 export async function POST(request: NextRequest) {
     if (request.headers.get('content-type') !== 'application/json')
         return NextResponse.json(
-            { error: 'This API only accepts JSON format.' },
+            { message: 'This API only accepts JSON format.' },
             { status: 400 }
         )
 
@@ -15,12 +15,14 @@ export async function POST(request: NextRequest) {
     const nick = req?.nick
     const clientIP = getClientIp(request)
 
+    console.log(clientIP)
+
     // TODO: przetestować IP, ale powinno działać
 
     if (!serverId)
         return NextResponse.json(
             {
-                error: 'Invalid data',
+                message: 'Invalid data',
             },
             {
                 status: 400,
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
     if (!clientIP)
         return NextResponse.json(
             {
-                error: 'Could not check client IP address',
+                message: 'Could not check client IP address',
             },
             {
                 status: 400,
@@ -42,12 +44,14 @@ export async function POST(request: NextRequest) {
     if (!(await checkIP(clientIP)))
         return NextResponse.json(
             {
-                error: 'Client IP marked as proxy',
+                message: 'Client IP marked as proxy',
             },
             {
                 status: 400,
             }
         )
+
+    // TODO: check token
 
     // Check if user already voted
     const userVoted = await prisma.vote.findFirst({
@@ -60,7 +64,7 @@ export async function POST(request: NextRequest) {
     if (userVoted)
         return NextResponse.json(
             {
-                error: 'You already voted for this server',
+                message: 'You already voted for this server',
             },
             {
                 status: 400,
@@ -77,7 +81,7 @@ export async function POST(request: NextRequest) {
     if (!server)
         return NextResponse.json(
             {
-                error: 'Server not found',
+                message: 'Server not found',
             },
             {
                 status: 404,
@@ -95,7 +99,7 @@ export async function POST(request: NextRequest) {
     if (!vote)
         return NextResponse.json(
             {
-                error: 'Error while creating vote',
+                message: 'Error while creating vote',
             },
             {
                 status: 500,
@@ -138,6 +142,8 @@ type IPCheckResponse = {
  * @param ip
  */
 const checkIP = async (ip: string) => {
+    console.log('aaa')
+    console.log(ip)
     try {
         const res: IPCheckResponse = await fetch(
             `https://noproxy-api.okaeri.eu/v1/${ip}`

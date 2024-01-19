@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     // Check if request is JSON
     if (request.headers.get('content-type') !== 'application/json')
         return NextResponse.json(
-            { error: 'This API only accepts JSON format.' },
+            { message: 'This API only accepts JSON format.' },
             { status: 400 }
         )
 
@@ -17,11 +17,11 @@ export async function POST(request: NextRequest) {
 
     // Check if serverId and price are provided
     if (!serverId || !price)
-        return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+        return NextResponse.json({ message: 'Invalid data' }, { status: 400 })
 
     // Check if price is a number
     if (isNaN(parseInt(price)))
-        return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+        return NextResponse.json({ message: 'Invalid data' }, { status: 400 })
 
     // Generate transaction
     try {
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     } catch (e) {
         logger.error(e)
         return NextResponse.json(
-            { error: 'Error while generating transaction' },
+            { message: 'Error while generating transaction' },
             { status: 500 }
         )
     }

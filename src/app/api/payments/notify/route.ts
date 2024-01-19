@@ -19,13 +19,13 @@ export async function POST(request: NextRequest) {
         !requestJson.apiVersion ||
         !requestJson.signature
     )
-        return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+        return NextResponse.json({ message: 'Invalid data' }, { status: 400 })
 
     // Verify that the request is from PayByLink
     const isValid = pbl.validateTransactionNotification(requestJson)
 
     if (!isValid)
-        return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+        return NextResponse.json({ message: 'Invalid data' }, { status: 400 })
 
     // Update transaction in database
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     if (!transaction)
         return NextResponse.json(
-            { error: 'Error while updating transaction' },
+            { message: 'Error while updating transaction' },
             { status: 500 }
         )
 
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
         )
         if (!updatedPromotion)
             return NextResponse.json(
-                { error: 'Error while updating promotion' },
+                { message: 'Error while updating promotion' },
                 { status: 500 }
             )
     }
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     if (!newPromotion)
         return NextResponse.json(
-            { error: 'Error while creating promotion' },
+            { message: 'Error while creating promotion' },
             { status: 500 }
         )
 
