@@ -33,7 +33,6 @@ export default function Add() {
     }
 
     const fetchServerDetails = async (address: string) => {
-        console.log('a')
         const gamedataURL = encodeURI(
             `https://api.gamedata.okaeri.cloud/v1/minecraftjava/${address.replaceAll(
                 '/',
@@ -51,7 +50,7 @@ export default function Add() {
                 return { error: true }
             }
 
-            console.log(await res.json())
+            console.log('GD response', await res.json())
 
             return res.json()
         } catch (e) {
@@ -65,7 +64,7 @@ export default function Add() {
     const checkIfServerInDB = async (address: string) => {
         try {
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/server/${address}`
+                `${process.env.NEXT_PUBLIC_API_URL}/api/servers/${address}`
             )
             if (!res.ok) {
                 setStepFail(1)
@@ -97,7 +96,7 @@ export default function Add() {
                         return
                     }
 
-                    console.log(serverDetails)
+                    console.log('SD: ', serverDetails)
 
                     const serverInDB = await checkIfServerInDB(serverAddress)
 

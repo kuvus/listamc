@@ -7,7 +7,7 @@ export default async function Widget({ params: { serverId }, searchParams }) {
     if (data.error)
         return <div>Wystąpił błąd podczas pobierania informacji.</div>
 
-    console.log(searchParams)
+    console.log('SP: ', searchParams)
 
     return (
         <div
@@ -31,7 +31,7 @@ export default async function Widget({ params: { serverId }, searchParams }) {
 }
 
 const getData = async (id: string) => {
-    const res = await fetch(`${process.env.API_URL}/server/${id}`, {
+    const res = await fetch(`${process.env.API_URL}/servers/${id}`, {
         next: { revalidate: 30 },
     })
 

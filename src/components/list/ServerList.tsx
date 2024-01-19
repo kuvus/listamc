@@ -54,13 +54,9 @@ export const ServerList: FunctionComponent<ServerListProps> = async ({
     )
 }
 
-const getData = async (promoted: boolean, page: number) => {
-    const res = await fetch(
-        `${process.env.API_URL}/servers/${20 * (page - 1)}-${
-            20 * page
-        }/votes/desc/${promoted}`,
-        { next: { revalidate: 10 } }
-    )
+export const getData = async (promoted: boolean, page: number) => {
+    const url = `${process.env.API_URL}/servers?skip=${20 * (page - 1)}&take=${20 * page}&orderBy=votes&sortOrder=desc&promoted=${promoted}`
+    const res = await fetch(url, { next: { revalidate: 10 } })
     // TODO: zmień revalidate na większe (teraz 10s)
 
     if (!res.ok) {

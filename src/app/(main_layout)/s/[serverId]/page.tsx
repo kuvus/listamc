@@ -262,7 +262,7 @@ export default async function Server({ params: { serverId } }) {
 }
 
 const getData = async (id: string) => {
-    const res = await fetch(`${process.env.API_URL}/server/${id}`, {
+    const res = await fetch(`${process.env.API_URL}/servers/${id}`, {
         next: { revalidate: 30 },
     })
 
