@@ -2,6 +2,7 @@
 
 import { Modal } from '@/components/shared/Modal'
 import { Suspense, useState } from 'react'
+import { Button } from '@/components/shared/Button'
 
 export const PromoteModal = () => {
     const [promoteDays, setPromoteDays] = useState(28)
@@ -15,7 +16,10 @@ export const PromoteModal = () => {
     return (
         <Suspense>
             <Modal name={'promote'} title={'Promowanie'}>
-                <div className={'flex flex-col gap-8 text-center'}>
+                <div
+                    className={
+                        'mx-auto flex w-full flex-col gap-8 text-center lg:w-3/4 xl:w-1/2'
+                    }>
                     <label htmlFor={'promoteDays'} className={'text-2xl'}>
                         Wybierz okres promowania
                     </label>
@@ -47,6 +51,12 @@ export const PromoteModal = () => {
                             zł
                         </span>
                     </div>
+                    <Button
+                        styling={'primary'}
+                        element={'button'}
+                        type={'submit'}>
+                        Oddaj głos!
+                    </Button>
                 </div>
             </Modal>
         </Suspense>

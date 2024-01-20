@@ -6,7 +6,7 @@ import Card from '@/components/shared/Card'
 import { PromoteModal } from '@/components/server/PromoteModal'
 import { WidgetsModal } from '@/components/server/WidgetsModal'
 import { VoteModal } from '@/components/server/VoteModal'
-import jwt from '@/components/shared/Jwt'
+import jwt from '@/utils/jwt'
 import Link from 'next/link'
 
 interface Data {

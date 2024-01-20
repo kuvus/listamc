@@ -12,18 +12,15 @@ export const VoteModal = ({
 }) => {
     return (
         <Suspense>
-            <Modal name={'vote'} title={'Zagłosuj na serwer'}>
+            <Modal name={'vote'} title={'Oddaj głos na serwer'}>
                 <VoteForm token={token} serverId={serverId} />
-                <div className={'mt-8 hidden flex-col items-center md:flex'}>
+                <div className={'mt-16 flex flex-col items-center'}>
                     <Image
                         src='/assets/noproxy.png'
                         alt='NoProxy'
-                        width={160}
-                        height={160}
+                        width={80}
+                        height={80}
                     />
-                    <span className={'text-xs'}>
-                        Głosy weryfikowane przez NoProxy
-                    </span>
                 </div>
             </Modal>
         </Suspense>

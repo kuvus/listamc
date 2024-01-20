@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@/components/shared/Button'
-import { FormEvent, FunctionComponent, useRef } from 'react'
+import { FormEvent, FunctionComponent, useRef, useState } from 'react'
 
 export type VoteFormProps = {
     token: string
@@ -13,7 +13,10 @@ export const VoteForm: FunctionComponent<VoteFormProps> = ({
 }) => {
     const playerNameRef = useRef<HTMLInputElement>(null)
 
-    const handleSubmit = (e: FormEvent) => {
+    const [error, setError] = useState('')
+
+    const handleSubmit = async (e: FormEvent) => {
+        setError('')
         e.preventDefault()
         if (!playerNameRef.current)
             return {
@@ -23,11 +26,62 @@ export const VoteForm: FunctionComponent<VoteFormProps> = ({
 
         const playerName = playerNameRef.current?.value
 
-        const voteUrl = `${process.env.NEXT_PUBLIC_API_URL}/vote/${serverId}`
+        const voteUrl = `${process.env.NEXT_PUBLIC_API_URL}/vote`
+
+        const body = {
+            token,
+            serverId,
+            nick: playerName,
+        }
+        // TODO: ztypuj fetche w całym kodzie, podobnie jak tutaj
+
+        try {
+            const response = await fetch(voteUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            })
+
+            if (!response.ok) {
+                setError('Wystąpił błąd')
+                return {
+                    error: true,
+                    message: 'Something went wrong',
+                }
+            }
+
+            const data = await response.json()
+
+            if (data.error) {
+                setError('Wystąpił błąd')
+                return {
+                    error: true,
+                    message: data.message,
+                }
+            }
+
+            console.log(data)
+
+            return {
+                error: false,
+                message: data.message,
+            }
+        } catch (e) {
+            return {
+                error: true,
+                message: e.message,
+            }
+        }
     }
 
     return (
-        <form className={'flex w-full flex-col gap-4'} onSubmit={handleSubmit}>
+        <form
+            className={
+                'mx-auto mt-8 flex w-full flex-col gap-4 md:w-3/4 lg:w-3/5 xl:w-3/6'
+            }
+            onSubmit={handleSubmit}>
             <div className={'flex w-full flex-col gap-2'}>
                 <label htmlFor={'voter_name'}>
                     <span className={'font-semibold'}>Nazwa gracza</span>{' '}
