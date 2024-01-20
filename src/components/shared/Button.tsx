@@ -2,13 +2,23 @@
 
 import { FunctionComponent } from 'react'
 import Link from 'next/link'
+import { cx, cva } from '@/utils/cva'
 
-const ButtonThemes = {
-    primary: 'text-text bg-sky-500 hover:bg-sky-600',
-    outline: 'text-text bg-semi-bg border border-semi-border',
-}
+export const button = cva({
+    base: 'px-8 py-2.5  rounded font-semibold inline-block text-base w-auto',
+    variants: {
+        intent: {
+            primary: 'text-text bg-sky-500 hover:bg-sky-600',
+            secondary: 'text-text bg-semi-bg border border-semi-border',
+            outline: 'text-text bg-semi-bg border border-semi-border',
+        },
+    },
+    defaultVariants: {
+        intent: 'primary',
+    },
+})
 
-export type ButtonThemeVariations = 'primary' | 'outline'
+export type ButtonThemeVariations = 'primary' | 'outline' | 'secondary'
 
 type ButtonProps = {
     children?: React.ReactNode
@@ -34,9 +44,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
     className,
     ...props
 }) => {
-    const classes = `px-8 py-2.5  rounded font-semibold inline-block text-base w-auto ${
-        className || ''
-    } ${ButtonThemes[styling] || ''}`
+    const classes = cx(button({ intent: styling }), className)
 
     if (element === 'a')
         return (

@@ -42,7 +42,7 @@ export const Modal = ({
     return (
         <>
             <dialog
-                className={`active:outline-0} min-h-[50vh] w-1/2 rounded bg-bg-900 p-8 text-text outline-0 backdrop:bg-bg-900 backdrop:bg-opacity-50 backdrop:backdrop-blur-sm`}
+                className={`active:outline-0} min-h-[50vh] w-10/12 rounded-md bg-bg-900 p-8 text-text outline-0 backdrop:bg-bg-900 backdrop:bg-opacity-50 backdrop:backdrop-blur-sm md:w-7/12 lg:w-3/5 xl:w-1/2`}
                 {...props}
                 ref={modalRef}
                 onClose={handleClose}>
