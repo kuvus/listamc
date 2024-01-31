@@ -8,6 +8,7 @@ import { WidgetsModal } from '@/components/server/WidgetsModal'
 import { VoteModal } from '@/components/server/VoteModal'
 import jwt from '@/utils/jwt'
 import Link from 'next/link'
+import { getServer } from '@/data/servers/getServer'
 
 interface Data {
     id?: number
@@ -262,13 +263,5 @@ export default async function Server({ params: { serverId } }) {
 }
 
 const getData = async (id: string) => {
-    const res = await fetch(`${process.env.API_URL}/servers/${id}`, {
-        next: { revalidate: 30 },
-    })
-
-    if (!res.ok) {
-        throw new Error('Failed to fetch data')
-    }
-
-    return res.json()
+    return (await getServer(id)) as Data
 }
