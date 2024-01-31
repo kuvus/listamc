@@ -17,8 +17,9 @@ const Tags: TagProps[] = [
 export const TagList: FunctionComponent = async () => {
     const tags = await getData()
     return (
-        <div className={'h scrollbar-thin mt-8 flex gap-4 overflow-x-auto'}>
-            {tags.map(tag => {
+        <div
+            className={'h mt-8 flex gap-4 overflow-x-auto pb-2 scrollbar-thin'}>
+            {tags.map((tag: { name: string; type: string }) => {
                 return (
                     <Tag tag={tag.name} normalized={tag.type} key={tag.type} />
                 )

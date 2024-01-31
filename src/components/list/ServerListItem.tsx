@@ -36,7 +36,9 @@ export const ServerListItem: FunctionComponent<ServerListItemProps> = ({
         <Link href={`/s/${id}-${address.replaceAll('.', '_')}`}>
             <article
                 className={`grid w-full grid-cols-1 gap-4 rounded border border-semi-border px-3 py-3 text-xl md:grid-cols-12 md:px-4 ${
-                    promoted ? 'bg-semi-promoted' : 'bg-semi-bg'
+                    promoted
+                        ? 'hover:bg-semi-promoted-hover bg-semi-promoted'
+                        : 'hover:bg-semi-bg-hover bg-semi-bg'
                 }`}>
                 <div className={'col-span-1 flex items-center gap-4'}>
                     <ImgFallback

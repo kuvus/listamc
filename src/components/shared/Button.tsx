@@ -9,8 +9,10 @@ export const button = cva({
     variants: {
         intent: {
             primary: 'text-text bg-sky-500 hover:bg-sky-600',
-            secondary: 'text-text bg-semi-bg border border-semi-border',
-            outline: 'text-text bg-semi-bg border border-semi-border',
+            secondary:
+                'text-text bg-semi-bg border border-semi-border hover:bg-semi-bg-hover',
+            outline:
+                'text-text bg-semi-bg border border-semi-border hover:bg-semi-bg-hover',
         },
     },
     defaultVariants: {

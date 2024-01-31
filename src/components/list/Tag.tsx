@@ -14,7 +14,7 @@ export const Tag: FunctionComponent<TagProps> = ({ tag, normalized }) => {
         <Link href={`?tag=${normalized}`}>
             <div
                 className={
-                    'flex items-center gap-1 whitespace-nowrap rounded border border-semi-border bg-semi-bg px-6 py-2'
+                    'hover:bg-semi-bg-hover flex items-center gap-1 whitespace-nowrap rounded border border-semi-border bg-semi-bg px-6 py-2 hover:cursor-pointer'
                 }>
                 <Hash size={18} />
                 {tag}

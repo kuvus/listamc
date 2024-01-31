@@ -13,23 +13,6 @@ interface PaginationButtonProps extends ComponentProps<'a'> {
 }
 
 const calculatePagination = (current: number, max: number) => {
-    // let prev = current === 1 ? -1 : current - 1,
-    //     next = current === max ? -1 : current + 1,
-    //     items = [1]
-    //
-    // if (current === 1 && max === 1) return { current, prev, next, items }
-    // if (current > 4) items.push(-1)
-    //
-    // let r = 2,
-    //     r1 = current - r,
-    //     r2 = current + r
-    //
-    // for (let i = r1 > 2 ? r1 : 2; i <= Math.min(max, r2); i++) items.push(i)
-    //
-    // if (r2 + 1 < max) items.push(-1)
-    // if (r2 < max) items.push(max)
-    //
-    // return { current, prev, next, items }
     const center = [
             current - 2,
             current - 1,
@@ -54,7 +37,6 @@ const calculatePagination = (current: number, max: number) => {
 
 const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
     children,
-    key,
     href,
     active,
 }) => {
@@ -63,15 +45,14 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
             <span
                 className={`flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 ${
                     active ? 'bg-semi-promoted' : 'bg-semi-bg'
-                }`}
-                key={key}>
+                }`}>
                 {children}
             </span>
         )
     return (
-        <Link href={href} key={key}>
+        <Link href={href}>
             <span
-                className={`flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 hover:cursor-pointer hover:bg-semi-promoted ${
+                className={`hover:bg-semi-bg-hover flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 hover:cursor-pointer ${
                     active ? 'bg-semi-promoted' : 'bg-semi-bg'
                 }`}>
                 {children}
