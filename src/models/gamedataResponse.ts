@@ -1,11 +1,17 @@
-export type GamedataResponse = {
-    address: ServerRealAddress
-    version: MinecraftJavaVersion
-    players: PLayers
-    favicon: Favicon
-    motd: Motd
-    query: any
-}
+export type GamedataResponse =
+    | {
+          address: ServerRealAddress
+          version: MinecraftJavaVersion
+          players: PLayers
+          favicon: Favicon
+          motd: Motd
+          query: any
+      }
+    | {
+          status: number
+          error: string
+          message: string
+      }
 
 type ServerRealAddress = {
     ip: string
