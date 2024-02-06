@@ -3,17 +3,20 @@ import { Loader2, X, Check } from 'lucide-react'
 import { Alert } from '@/components/shared/Alert'
 
 const StepOneDef = (props, ref) => {
+    const { callback } = props
     return (
         <>
             <h1 className={'text-2xl'}>Podaj adres serwera</h1>
-            <input
-                type={'text'}
-                className={
-                    'rounded border border-semi-border bg-bg-800 px-4 py-4 text-xl'
-                }
-                placeholder={'adresserwera.pl'}
-                ref={ref}
-            />
+            <form onSubmit={callback} className={'w-full'}>
+                <input
+                    type={'text'}
+                    className={
+                        'w-full rounded border border-semi-border bg-bg-800 px-4 py-4 text-xl'
+                    }
+                    placeholder={'adresserwera.pl'}
+                    ref={ref}
+                />
+            </form>
         </>
     )
 }
