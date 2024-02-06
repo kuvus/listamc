@@ -18,7 +18,9 @@ export const TagList: FunctionComponent = async () => {
     const tags = await getData()
     return (
         <div
-            className={'h mt-8 flex gap-4 overflow-x-auto pb-2 scrollbar-thin'}>
+            className={
+                'h mt-8 flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-track-semi-bg scrollbar-thumb-semi-border'
+            }>
             {tags.map((tag: { name: string; type: string }) => {
                 return (
                     <Tag tag={tag.name} normalized={tag.type} key={tag.type} />
