@@ -10,6 +10,7 @@ interface PaginationButtonProps extends ComponentProps<'a'> {
     children: React.ReactNode
     active: boolean
     href: string
+    ariaLabel?: string
 }
 
 const calculatePagination = (current: number, max: number) => {
@@ -39,6 +40,7 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
     children,
     href,
     active,
+    ariaLabel,
 }) => {
     if (children === '...')
         return (
@@ -50,9 +52,9 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
             </span>
         )
     return (
-        <Link href={href}>
+        <Link href={href} aria-label={ariaLabel}>
             <span
-                className={`hover:bg-semi-bg-hover flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 hover:cursor-pointer ${
+                className={`flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 hover:cursor-pointer hover:bg-semi-bg-hover ${
                     active ? 'bg-semi-promoted' : 'bg-semi-bg'
                 }`}>
                 {children}
@@ -74,7 +76,8 @@ export const Pagination: FunctionComponent<PaginationProps> = async ({
             <PaginationButton
                 key={-20}
                 href={`/p/${current !== 1 ? current - 1 : 1}`}
-                active={false}>
+                active={false}
+                ariaLabel={'Poprzednia strona'}>
                 <ChevronLeft />
             </PaginationButton>
             {d.map((item, i) => {
@@ -87,20 +90,13 @@ export const Pagination: FunctionComponent<PaginationProps> = async ({
                             ...
                         </PaginationButton>
                     )
-                if (item === current)
-                    return (
-                        <PaginationButton
-                            key={item}
-                            href={`/p/${item}`}
-                            active={current === item}>
-                            {item}
-                        </PaginationButton>
-                    )
+
                 return (
                     <PaginationButton
                         key={item}
                         href={`/p/${item}`}
-                        active={current === item}>
+                        active={current === item}
+                        ariaLabel={`Strona ${item}`}>
                         {item}
                     </PaginationButton>
                 )
@@ -108,7 +104,8 @@ export const Pagination: FunctionComponent<PaginationProps> = async ({
             <PaginationButton
                 key={-20}
                 href={`/p/${current !== max ? current + 1 : max}`}
-                active={false}>
+                active={false}
+                ariaLabel={'Następna strona'}>
                 <ChevronRight />
             </PaginationButton>
         </div>
@@ -116,9 +113,10 @@ export const Pagination: FunctionComponent<PaginationProps> = async ({
 }
 
 const getData = async () => {
-    const res = await fetch(`${process.env.API_URL}/servers/count`, {
+    const res = await fetch(`${process.env.API_URL}/servers?count=true`, {
         next: { revalidate: 10 },
     })
+
     // TODO: zmień revalidate na większe (teraz 10s)
 
     if (!res.ok) {
