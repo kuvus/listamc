@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import { ApiResponse } from '@/models/apiResponse'
+'use server'
+
 import { GamedataResponse } from '@/models/gamedataResponse'
 
 export default async function getGamedata(
