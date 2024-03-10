@@ -1,14 +1,19 @@
 import { PrismaClient } from '@prisma/client'
 
-let prisma: PrismaClient
+const createPrismaClient = () =>
+    new PrismaClient({
+        log:
+            process.env.NODE_ENV === 'development'
+                ? ['query', 'error', 'warn']
+                : ['error'],
+    })
 
-if (process.env.NODE_ENV === 'production') {
-    prisma = new PrismaClient()
-} else {
-    if (!global.prisma) {
-        global.prisma = new PrismaClient()
-    }
-    prisma = global.prisma
+const globalForPrisma = globalThis as unknown as {
+    prisma: ReturnType<typeof createPrismaClient> | undefined
 }
 
+const prisma = globalForPrisma.prisma ?? createPrismaClient()
+
 export default prisma
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
