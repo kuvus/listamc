@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/shared/Button'
 import { StepOne, StepTwo, StepThree } from '@/components/add/Steps'
 import StepCard from '@/components/add/StepCard'
-import * as process from 'process'
 
 export default function Add() {
     const [step, setStep] = useState(0)
@@ -14,6 +13,7 @@ export default function Add() {
     const [nextStepReady, setNextStepReady] = useState(true)
 
     const inputRef = useRef<HTMLInputElement>(null)
+    const controllerRef = useRef<AbortController>(new AbortController())
 
     const incrementStep = () => {
         setStepFail(-1)
@@ -26,6 +26,8 @@ export default function Add() {
         setStepFail(-1)
         if (step == 1) {
             setNextStepReady(true)
+            controllerRef.current.abort('back to step 0')
+            controllerRef.current = new AbortController()
         }
         setStep(cs => (cs == 0 ? cs : cs - 1))
     }
@@ -38,23 +40,33 @@ export default function Add() {
 
     const fetchServerDetails = async (address: string) => {
         setAddStep(0)
-        const gamedataURL = encodeURI(
-            `${process.env.NEXT_PUBLIC_API_URL}/gamedata/${address.replaceAll('/', '')}`
-        )
+
+        if (controllerRef.current) {
+            controllerRef.current.abort()
+            controllerRef.current = new AbortController()
+        }
+
+        console.log('fetching')
 
         try {
-            const res = await fetch(gamedataURL)
+            // const res = await getGamedata(address)
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/gamedata/${address}`,
+                {
+                    signal: controllerRef.current.signal,
+                }
+            )
 
             if (!res.ok) {
                 setStepFail(0)
                 return { error: true }
             }
 
-            const body = await res.json()
+            const json = await res.json()
 
-            console.log('GD response', body)
+            console.log('GD response', json)
 
-            return body
+            return json
         } catch (e) {
             setStepFail(0)
             console.log(e)
@@ -100,7 +112,7 @@ export default function Add() {
                     const serverDetails =
                         await fetchServerDetails(serverAddress)
 
-                    if (serverDetails.error) {
+                    if (serverDetails.hasOwnProperty('error')) {
                         console.log('error')
                         return
                     }
@@ -108,11 +120,6 @@ export default function Add() {
                     console.log('SD: ', serverDetails)
 
                     const serverInDB = await checkIfServerInDB(serverAddress)
-
-                    // if (serverInDB.error) {
-                    //     console.log('error')
-                    //     return
-                    // }
 
                     setAddStep(3)
                     setNextStepReady(true)
