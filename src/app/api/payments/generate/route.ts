@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/utils/prisma'
+import prisma from '@/lib/prisma'
 import { PblClient } from 'paybylink-wrapper'
-import logger from '@/utils/logger'
+import logger from '@/lib/logger'
 
 const pbl = new PblClient(process.env.PBL_SECRET, process.env.PBL_SHOP_ID)
 

@@ -1,8 +1,9 @@
 'use server'
 
-import prisma from '@/utils/prisma'
+import prisma from '@/lib/prisma'
+import { Server } from '@/models/Server'
 
-export const getServer = async (serverId: string) => {
+export const getServer = async (serverId: string): Promise<Server | null> => {
     const serverIdParsed = parseInt(serverId)
 
     const select = {

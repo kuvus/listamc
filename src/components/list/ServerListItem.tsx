@@ -1,78 +1,61 @@
-import { FunctionComponent } from 'react'
-import Image from 'next/image'
-import { list } from 'postcss'
-import { Heart, PackageOpen, Users } from 'lucide-react'
+import { LuHeart, LuUsers } from 'react-icons/lu'
 import { StatusIndicator } from '@/components/list/StatusIndicator'
 import Link from 'next/link'
 import ImgFallback from '@/components/shared/ImgFallback'
+import { Server } from '@/models/Server'
 
 interface ServerListItemProps {
-    id: string
-    address: string
-    img: string
-    motd: [string, string]
-    players: [number, number]
-    version: string
-    votes: number
-    promoted: boolean
-    online: boolean
+    server: Server
 }
 
-export type { ServerListItemProps }
-
-// TODO: dodać link
-export const ServerListItem: FunctionComponent<ServerListItemProps> = ({
-    id,
-    address,
-    motd,
-    players,
-    version,
-    img,
-    votes,
-    promoted,
-    online,
-}) => {
+export const ServerListItem = ({ server }: ServerListItemProps) => {
     return (
-        <Link href={`/s/${id}-${address.replaceAll('.', '_')}`}>
+        <Link
+            href={`/s/${server.ServerData?.server_id}-${server.address.replaceAll('.', '_')}`}>
             <article
-                className={`grid w-full grid-cols-1 gap-4 rounded border border-semi-border px-3 py-3 text-xl md:grid-cols-12 md:px-4 ${
-                    promoted
+                className={`border-semi-border grid w-full grid-cols-1 gap-4 rounded-md border px-3 py-3 text-xl md:grid-cols-12 md:px-4 ${
+                    server.Promotion
                         ? 'hover:bg-semi-promoted-hover bg-semi-promoted'
                         : 'hover:bg-semi-bg-hover bg-semi-bg'
                 }`}>
                 <div className={'col-span-1 flex items-center gap-4'}>
                     <ImgFallback
-                        src={img}
+                        src={server.ServerData?.icon}
                         fallback={'/assets/listamc-64x64.png'}
                         alt={''}
                         className={'h-8 w-8 rounded lg:h-16 lg:w-16'}
                     />
-                    <span className={'inline md:hidden'}>{address}</span>
+                    <span className={'inline md:hidden'}>{server.address}</span>
                 </div>
                 <div className={'col-span-7 flex flex-col'}>
-                    <span className={'hidden md:inline'}>{address}</span>
-                    <span className={'truncate'}>{motd.join(' ')}</span>
+                    <span className={'hidden md:inline'}>{server.address}</span>
+                    <span className={'truncate'}>
+                        {server.ServerData?.motd_text.split('\\n').join(' ')}
+                    </span>
                 </div>
                 <div
                     className={
                         'col-span-2 flex items-center gap-2 md:justify-end'
                     }>
-                    <span>{votes}</span>
-                    <Heart size={20} />
+                    <span>{server._count.Vote}</span>
+                    <LuHeart size={20} />
                 </div>
                 <div
                     className={
                         'col-span-2 flex flex-row items-end justify-center gap-4 md:flex-col md:gap-0'
                     }>
                     <div className={'flex items-center gap-2'}>
-                        <span>{version}</span>
-                        <StatusIndicator status={online} />
+                        <span>{server.ServerData?.version}</span>
+                        <StatusIndicator
+                            status={server.ServerData?.online ?? false}
+                        />
                     </div>
                     <div className={'flex items-center gap-2'}>
                         <span>
-                            {players[0]}/{players[1]}
+                            {server.ServerData?.players_online}/
+                            {server.ServerData?.players_max}
                         </span>
-                        <Users size={20} />
+                        <LuUsers size={20} />
                     </div>
                 </div>
             </article>

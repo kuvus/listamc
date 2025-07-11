@@ -1,6 +1,15 @@
 import { forwardRef, FunctionComponent } from 'react'
-import { Loader2, X, Check } from 'lucide-react'
+import {
+    LuLoaderCircle,
+    LuX,
+    LuCheck,
+    LuServer,
+    LuUsers,
+    LuMonitor,
+} from 'react-icons/lu'
 import { Alert } from '@/components/shared/Alert'
+import { Button } from '@/components/ui/button'
+import { GamedataResponse } from '@/models/gamedataResponse'
 
 const StepOneDef = (props, ref) => {
     const { callback } = props
@@ -11,7 +20,7 @@ const StepOneDef = (props, ref) => {
                 <input
                     type={'text'}
                     className={
-                        'w-full rounded border border-semi-border bg-bg-800 px-4 py-4 text-xl'
+                        'border-semi-border bg-bg-800 w-full rounded border px-4 py-4 text-xl'
                     }
                     placeholder={'adresserwera.pl'}
                     ref={ref}
@@ -30,11 +39,11 @@ type StateIconType = {
 const StateIcon: FunctionComponent<StateIconType> = ({ state }) => {
     switch (state) {
         case 'load':
-            return <Loader2 className={'animate-spin text-text'} />
+            return <LuLoaderCircle className={'text-text animate-spin'} />
         case 'ok':
-            return <Check className={'text-green-500'} />
+            return <LuCheck className={'text-green-500'} />
         case 'fail':
-            return <X className={'text-red-600'} />
+            return <LuX className={'text-red-600'} />
         default:
             return null
     }
@@ -59,21 +68,10 @@ const StepStateIcon: FunctionComponent<StepStateIconType> = ({
     return null
 }
 
-const StepTwo = ({ step, key, error }) => {
-    // TODO:
-    // 1. Fetch do API Gamedata
-    // 2. Fetch do API listy czy nie ma jeszcze serwera na liście
-    // 3a. Jeśli nie ma to dodajemy serwer do listy
-    // 3b. Jeśli jest to wyświetlamy komunikat o tym
-    // 4. Przejście do kroku 3
-
-    // console.log(error)
-
-    //
-    // console.log(step, error)
+const StepTwo = ({ step, error }) => {
     const errorText = [
-        'Wystąpił błąd podczas pobierania danych serwera',
-        'Wystąpił błąd podczas pobierania danych serwera',
+        'Wystąpił błąd podczas pobierania danych serwera. Sprawdź czy serwer jest włączony.',
+        'Wystąpił błąd podczas sprawdzania czy serwer istnieje na liście',
     ]
 
     return (
@@ -92,18 +90,124 @@ const StepTwo = ({ step, key, error }) => {
                     </span>
                 </div>
             )}
-            {step > 1 && (
-                <div className={'flex gap-2'}>
-                    <StepStateIcon step={2} current={step} error={error} />
-                    <span>Dodawanie serwera na listę...</span>
-                </div>
-            )}
         </>
     )
 }
 
-const StepThree = () => {
-    return <></>
+type StepThreeProps = {
+    serverDetails: GamedataResponse | null
+    serverExists: boolean
+    existingServer?: any
+    onAddServer: () => Promise<void>
+    isAdding: boolean
+}
+
+const StepThree: FunctionComponent<StepThreeProps> = ({
+    serverDetails,
+    serverExists,
+    existingServer,
+    onAddServer,
+    isAdding,
+}) => {
+    if (!serverDetails || serverDetails.hasOwnProperty('error')) {
+        return (
+            <>
+                <h1 className={'text-2xl'}>Błąd</h1>
+                <Alert type={'error'}>
+                    Nie udało się pobrać danych serwera
+                </Alert>
+            </>
+        )
+    }
+
+    if (serverExists) {
+        return (
+            <>
+                <h1 className={'text-2xl'}>Serwer już istnieje</h1>
+                <Alert type={'info'}>
+                    Ten serwer został już dodany do listy serwerów.
+                </Alert>
+                {existingServer?.id && (
+                    <a href={`/s/${existingServer.id}`}>
+                        <Button className={'mt-4 w-full'} size={'lg'}>
+                            Przejdź do strony serwera
+                        </Button>
+                    </a>
+                )}
+            </>
+        )
+    }
+
+    const motd = 'motd' in serverDetails ? serverDetails.motd.text : ''
+
+    return (
+        <>
+            <h1 className={'text-2xl'}>Potwierdzenie dodania serwera</h1>
+            <div className={'border-semi-border bg-semi-bg rounded border p-4'}>
+                <div className={'mb-4'}>
+                    <h2 className={'mb-2 text-lg font-semibold'}>
+                        Szczegóły serwera:
+                    </h2>
+                </div>
+
+                <div className={'grid grid-cols-1 gap-4 md:grid-cols-2'}>
+                    <div className={'flex items-center gap-2'}>
+                        <LuServer />
+                        <span className={'text-sm text-gray-400'}>Wersja:</span>
+                        <span>
+                            {'version' in serverDetails
+                                ? serverDetails.version.range.display
+                                : 'Unknown'}
+                        </span>
+                    </div>
+
+                    <div className={'flex items-center gap-2'}>
+                        <LuUsers />
+                        <span className={'text-sm text-gray-400'}>Gracze:</span>
+                        <span>
+                            {'players' in serverDetails
+                                ? `${serverDetails.players.online}/${serverDetails.players.max}`
+                                : '0/0'}
+                        </span>
+                    </div>
+                </div>
+
+                {motd && (
+                    <div className={'mt-4'}>
+                        <div className={'mb-2 flex items-center gap-2'}>
+                            <LuMonitor />
+                            <span className={'text-sm text-gray-400'}>
+                                MOTD:
+                            </span>
+                        </div>
+                        <div className={'rounded bg-gray-800 p-2 text-sm'}>
+                            {motd}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className={'mt-6'}>
+                <p className={'mb-4 text-gray-300'}>
+                    Czy chcesz dodać ten serwer do listy serwerów Minecraft?
+                </p>
+                <Button
+                    onClick={onAddServer}
+                    size={'lg'}
+                    disabled={isAdding}
+                    className={'w-full'}>
+                    {isAdding ? (
+                        <>
+                            <LuLoaderCircle className={'mr-2 animate-spin'} />
+                            Dodawanie serwera...
+                        </>
+                    ) : (
+                        'Dodaj serwer'
+                    )}
+                </Button>
+            </div>
+        </>
+    )
 }
 
 export { StepOne, StepTwo, StepThree }

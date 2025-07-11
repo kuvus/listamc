@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Button } from '@/components/shared/Button'
+import { Button } from '@/components/ui/button'
 import { FunctionComponent } from 'react'
 import Link from 'next/link'
 
@@ -38,7 +38,7 @@ export const Navbar: FunctionComponent = () => {
                 </Link>
                 <ul
                     className={
-                        'hidden list-none gap-8 font-semibold text-text md:flex'
+                        'text-text hidden list-none gap-8 font-semibold md:flex'
                     }>
                     {Pages.map(page => {
                         return (
@@ -48,13 +48,8 @@ export const Navbar: FunctionComponent = () => {
                         )
                     })}
                 </ul>
-                <Button
-                    styling={'outline'}
-                    size={''}
-                    href={'add'}
-                    element={'a'}
-                    className={'hidden md:inline-block'}>
-                    Dodaj swój serwer
+                <Button variant={'outline'} size={'lg'} asChild>
+                    <Link href={'/add'}>Dodaj swój serwer</Link>
                 </Button>
             </nav>
         </div>

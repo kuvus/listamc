@@ -1,5 +1,6 @@
 import { Tag } from '@/components/list/Tag'
 import type { TagProps } from '@/components/list/Tag'
+import { getTags } from '@/data/tags'
 import { FunctionComponent } from 'react'
 
 // TODO: Remove hardcoded, replace with fetch
@@ -15,11 +16,11 @@ const Tags: TagProps[] = [
 ]
 
 export const TagList: FunctionComponent = async () => {
-    const tags = await getData()
+    const tags = await getTags()
     return (
         <div
             className={
-                'h mt-8 flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-track-semi-bg scrollbar-thumb-semi-border'
+                'h scrollbar-thin scrollbar-track-semi-bg scrollbar-thumb-semi-border mt-8 flex gap-4 overflow-x-auto pb-2'
             }>
             {tags.map((tag: { name: string; type: string }) => {
                 return (
@@ -28,17 +29,4 @@ export const TagList: FunctionComponent = async () => {
             })}
         </div>
     )
-}
-
-const getData = async () => {
-    const res = await fetch(`${process.env.API_URL}/tags`, {
-        next: { revalidate: 1800 },
-    })
-
-    if (!res.ok) {
-        // This will activate the closest `error.js` Error Boundary
-        throw new Error('Failed to fetch data')
-    }
-
-    return res.json()
 }

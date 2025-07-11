@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { NextAuthProvider } from '@/app/providers'
+import Providers from '@/app/providers'
 
 import '../global.css'
 
@@ -27,12 +27,12 @@ export default function RootLayout({
     return (
         <html lang='pl'>
             <body
-                className={`${nunito.variable} ${nunito.className} bg-gradient-radial from-bg-800 to-bg-900 bg-fixed text-text`}>
-                <NextAuthProvider>
+                className={`${nunito.variable} ${nunito.className} from-bg-800 to-bg-900 text-text bg-radial bg-fixed has-[dialog[open]]:overflow-y-hidden`}>
+                <Providers>
                     <Navbar />
                     <main className={'min-h-[40vh]'}>{children}</main>
                     <Footer />
-                </NextAuthProvider>
+                </Providers>
             </body>
         </html>
     )

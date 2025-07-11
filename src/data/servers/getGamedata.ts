@@ -18,14 +18,16 @@ export default async function getGamedata(
         },
     })
 
-    // if (!response.ok) {
-    //     const body = await response.json()
-    //
-    //     switch (response.status) {
-    //         case 400:
-    //             return body
-    //     }
-    // }
+    if (!response.ok) {
+        const body = await response.text()
 
-    return await response.json()
+        throw new Error(body)
+
+        // switch (response.status) {
+        //     case 400:
+        //         return body
+        // }
+    }
+
+    return response.json()
 }

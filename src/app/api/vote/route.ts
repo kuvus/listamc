@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getClientIp } from 'request-ip'
-import prisma from '@/utils/prisma'
+import prisma from '@/lib/prisma'
 import md5 from 'md5'
 
 export async function POST(request: NextRequest) {

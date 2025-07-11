@@ -2,7 +2,7 @@
 
 import { FunctionComponent } from 'react'
 import Link from 'next/link'
-import { cx, cva } from '@/utils/cva'
+import { cx, cva } from '@/lib/cva'
 
 export const button = cva({
     base: 'px-8 py-2.5  rounded font-semibold inline-block text-base w-auto',

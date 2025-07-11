@@ -1,7 +1,0 @@
--- AlterTable
-ALTER TABLE "Promotion" ALTER COLUMN "date_start" SET DEFAULT CURRENT_TIMESTAMP;
-
--- AlterTable
-ALTER TABLE "ServerMetadata" ALTER COLUMN "description" DROP NOT NULL,
-ALTER COLUMN "gamemodes" DROP NOT NULL,
-ALTER COLUMN "urls" DROP NOT NULL;

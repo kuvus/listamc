@@ -1,6 +1,6 @@
 import { NextApiRequest } from 'next'
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/utils/prisma'
+import prisma from '@/lib/prisma'
 
 // GET /api/servers/?skip=[0..9+]&take=[0..9+]&orderBy=[orderBy]&sortOrder=[sortOrder]&promoted=[true|false]&count=[true|false]
 export async function GET(request: NextRequest) {

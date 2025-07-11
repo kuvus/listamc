@@ -1,8 +1,12 @@
 import { StatusIndicator } from '@/components/list/StatusIndicator'
-import { Users } from 'lucide-react'
+import { LuUsers } from 'react-icons/lu'
 import { getServer } from '@/data/servers/getServer'
 
-export default async function Widget({ params: { serverId }, searchParams }) {
+export default async function Widget(props) {
+    const params = await props.params
+
+    const { serverId } = params
+
     const data = await getServer(serverId)
 
     if (!data || !data.ServerData)
@@ -10,7 +14,7 @@ export default async function Widget({ params: { serverId }, searchParams }) {
 
     return (
         <div
-            className={`flex h-full w-full flex-row justify-between gap-4 bg-bg-800 p-2 text-text`}>
+            className={`bg-bg-800 text-text flex h-full w-full flex-row justify-between gap-4 p-2`}>
             <div className={'flex flex-row items-center gap-4'}>
                 <img src={data.ServerData.icon} alt='' />
                 <div className={'text-xl font-semibold'}>{data.address}</div>
@@ -25,7 +29,7 @@ export default async function Widget({ params: { serverId }, searchParams }) {
                         {data.ServerData.players_online}/
                         {data.ServerData.players_max}
                     </span>
-                    <Users size={20} />
+                    <LuUsers size={20} />
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import { cx, cva } from '@/utils/cva'
+import { cx, cva } from '@/lib/cva'
 
 export const alert = cva({
     base: 'w-full rounded border p-4',

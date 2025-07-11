@@ -7,6 +7,7 @@ ListaMC.pl is a Minecraft server list that allows users to find new servers and 
 ## How to run
 
 ### Docker
+
 ```bash
 docker build -t listamc .
 docker run -d -p 3000:3000 listamc
@@ -15,6 +16,7 @@ docker run -d -p 3000:3000 listamc
 ### Locally
 
 To run development server:
+
 ```bash
 npm run dev
 # or
@@ -24,6 +26,7 @@ pnpm dev
 ```
 
 To run production server:
+
 ```bash
 npm run build
 # or
@@ -31,7 +34,9 @@ yarn build
 # or
 pnpm build
 ```
-and
+
+and then
+
 ```bash
 npm run start
 # or
@@ -39,5 +44,3 @@ yarn start
 # or
 pnpm start
 ```
-
-

@@ -1,6 +1,8 @@
 import { ComponentProps, FunctionComponent } from 'react'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu'
+import { cn } from '@/lib/utils'
+import { getServerCount } from '@/data/server'
 
 interface PaginationProps {
     current: number
@@ -45,18 +47,21 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
     if (children === '...')
         return (
             <span
-                className={`flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 ${
+                className={cn(
+                    'border-semi-border flex h-11 items-center justify-center rounded-md border px-4 py-2',
                     active ? 'bg-semi-promoted' : 'bg-semi-bg'
-                }`}>
+                )}>
                 {children}
             </span>
         )
+
     return (
         <Link href={href} aria-label={ariaLabel}>
             <span
-                className={`flex h-11 items-center justify-center rounded border border-semi-border px-4 py-2 hover:cursor-pointer hover:bg-semi-bg-hover ${
+                className={cn(
+                    'border-semi-border hover:bg-semi-bg-hover flex h-11 items-center justify-center rounded-md border px-4 py-2 hover:cursor-pointer',
                     active ? 'bg-semi-promoted' : 'bg-semi-bg'
-                }`}>
+                )}>
                 {children}
             </span>
         </Link>
@@ -66,7 +71,7 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({
 export const Pagination: FunctionComponent<PaginationProps> = async ({
     current,
 }) => {
-    const max = Math.ceil((await getData())['count'] / 20) || 1
+    const max = Math.ceil((await getServerCount()) / 20) || 1
     const d = calculatePagination(current, max)
 
     if (d.length == 2 && d[0] == d[1]) d.pop()
@@ -74,11 +79,11 @@ export const Pagination: FunctionComponent<PaginationProps> = async ({
     return (
         <div className={'mt-12 flex justify-center gap-2'}>
             <PaginationButton
-                key={-20}
+                key='prev'
                 href={`/p/${current !== 1 ? current - 1 : 1}`}
                 active={false}
                 ariaLabel={'Poprzednia strona'}>
-                <ChevronLeft />
+                <LuChevronLeft />
             </PaginationButton>
             {d.map((item, i) => {
                 if (item === -1)
@@ -102,27 +107,12 @@ export const Pagination: FunctionComponent<PaginationProps> = async ({
                 )
             })}
             <PaginationButton
-                key={-20}
+                key='next'
                 href={`/p/${current !== max ? current + 1 : max}`}
                 active={false}
                 ariaLabel={'Następna strona'}>
-                <ChevronRight />
+                <LuChevronRight />
             </PaginationButton>
         </div>
     )
-}
-
-const getData = async () => {
-    const res = await fetch(`${process.env.API_URL}/servers?count=true`, {
-        next: { revalidate: 10 },
-    })
-
-    // TODO: zmień revalidate na większe (teraz 10s)
-
-    if (!res.ok) {
-        // This will activate the closest `error.js` Error Boundary
-        throw new Error('Failed to fetch data')
-    }
-
-    return res.json()
 }

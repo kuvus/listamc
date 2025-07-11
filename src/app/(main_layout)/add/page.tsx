@@ -1,9 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/shared/Button'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 import { StepOne, StepTwo, StepThree } from '@/components/add/Steps'
 import StepCard from '@/components/add/StepCard'
+import { addServer, getServerByAddress } from '@/data/server'
+import getGamedata from '@/data/servers/getGamedata'
+import { GamedataResponse } from '@/models/gamedataResponse'
 
 export default function Add() {
     const [step, setStep] = useState(0)
@@ -11,9 +15,15 @@ export default function Add() {
     const [serverAddress, setServerAddress] = useState('')
     const [stepFail, setStepFail] = useState(-1)
     const [nextStepReady, setNextStepReady] = useState(true)
+    const [serverDetails, setServerDetails] = useState<GamedataResponse | null>(
+        null
+    )
+    const [serverExists, setServerExists] = useState(false)
+    const [isAddingServer, setIsAddingServer] = useState(false)
+    const [existingServer, setExistingServer] = useState<any>(null)
 
     const inputRef = useRef<HTMLInputElement>(null)
-    const controllerRef = useRef<AbortController>(new AbortController())
+    const router = useRouter()
 
     const incrementStep = () => {
         setStepFail(-1)
@@ -26,72 +36,105 @@ export default function Add() {
         setStepFail(-1)
         if (step == 1) {
             setNextStepReady(true)
-            controllerRef.current.abort('back to step 0')
-            controllerRef.current = new AbortController()
+        }
+        if (step == 2) {
+            setNextStepReady(true)
         }
         setStep(cs => (cs == 0 ? cs : cs - 1))
     }
 
-    const steps = [
-        <StepOne key={'step-1'} ref={inputRef} callback={incrementStep} />,
-        <StepTwo key={'step-2'} step={addStep} error={stepFail} />,
-        <StepThree key={'step-3'} />,
-    ]
+    const handleAddServer = async () => {
+        if (!serverDetails || serverDetails.hasOwnProperty('error')) return
 
-    const fetchServerDetails = async (address: string) => {
-        setAddStep(0)
-
-        if (controllerRef.current) {
-            controllerRef.current.abort()
-            controllerRef.current = new AbortController()
-        }
-
-        console.log('fetching')
+        setIsAddingServer(true)
 
         try {
-            // const res = await getGamedata(address)
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/gamedata/${address}`,
-                {
-                    signal: controllerRef.current.signal,
-                }
-            )
-
-            if (!res.ok) {
-                setStepFail(0)
-                return { error: true }
+            const serverData = {
+                version:
+                    'version' in serverDetails
+                        ? serverDetails.version.range.display || 'Unknown'
+                        : 'Unknown',
+                players_online:
+                    'players' in serverDetails
+                        ? serverDetails.players.online
+                        : 0,
+                players_max:
+                    'players' in serverDetails ? serverDetails.players.max : 0,
+                motd:
+                    'motd' in serverDetails
+                        ? serverDetails.motd.html
+                        : 'Unknown',
+                motd_text:
+                    'motd' in serverDetails
+                        ? serverDetails.motd.text
+                        : 'Unknown',
+                icon:
+                    'favicon' in serverDetails ? serverDetails.favicon.url : '',
+                online: true,
+                last_update: new Date(),
             }
 
-            const json = await res.json()
+            const addedServer = await addServer(serverData, serverAddress)
 
-            console.log('GD response', json)
+            router.push(`/s/${addedServer.id}`)
+        } catch (error) {
+            console.error('Error adding server:', error)
+            setIsAddingServer(false)
+        }
+    }
 
-            return json
+    const steps = [
+        <StepOne ref={inputRef} callback={incrementStep} />,
+        <StepTwo step={addStep} error={stepFail} />,
+        <StepThree
+            serverDetails={serverDetails}
+            serverExists={serverExists}
+            existingServer={existingServer}
+            onAddServer={handleAddServer}
+            isAdding={isAddingServer}
+        />,
+    ]
+
+    const getServerDetailsFromAPI = async (
+        address: string
+    ): Promise<GamedataResponse> => {
+        setAddStep(0)
+
+        try {
+            const res = await getGamedata(address)
+
+            if (!res) {
+                setStepFail(0)
+                return res
+            }
+
+            return res
         } catch (e) {
             setStepFail(0)
             console.log(e)
         }
 
-        return { error: true }
+        return {
+            status: 404,
+            error: 'Server not reachable',
+            message: 'Server not reachable',
+        }
     }
 
     const checkIfServerInDB = async (address: string) => {
         setAddStep(1)
         try {
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/servers/${address}`
-            )
-            if (!res.ok) {
-                switch (res.status) {
-                    case 404:
-                        setAddStep(2)
-                        break
-                    default:
-                        setStepFail(1)
-                        break
-                }
+            const res = await getServerByAddress(address)
+            if (!res) {
+                setAddStep(2)
+                setServerExists(false)
+                setExistingServer(null)
+                return { error: false }
             }
-            return res.json()
+            setServerExists(true)
+            setExistingServer(res)
+            setAddStep(2)
+            return res
         } catch (e) {
             setStepFail(1)
         }
@@ -109,19 +152,19 @@ export default function Add() {
                 break
             case 1:
                 ;(async () => {
-                    const serverDetails =
-                        await fetchServerDetails(serverAddress)
+                    const fetchedServerDetails =
+                        await getServerDetailsFromAPI(serverAddress)
 
-                    if (serverDetails.hasOwnProperty('error')) {
+                    if (fetchedServerDetails.hasOwnProperty('error')) {
                         console.log('error')
                         return
                     }
 
-                    console.log('SD: ', serverDetails)
+                    console.log('SD: ', fetchedServerDetails)
+                    setServerDetails(fetchedServerDetails)
 
-                    const serverInDB = await checkIfServerInDB(serverAddress)
+                    await checkIfServerInDB(serverAddress)
 
-                    setAddStep(3)
                     setNextStepReady(true)
                 })()
                 break
@@ -141,23 +184,21 @@ export default function Add() {
             </div>
             <div
                 className={
-                    'flex flex-col gap-4 rounded border border-semi-border bg-semi-bg px-6 py-6'
+                    'border-semi-border bg-semi-bg flex flex-col gap-4 rounded border px-6 py-6'
                 }>
                 {steps[step]}
                 <div className={'flex w-full justify-end gap-4'}>
                     {step > 0 && (
                         <Button
-                            styling={'outline'}
-                            element={'button'}
-                            onClick={decrementStep}>
+                            variant={'outline'}
+                            onClick={decrementStep}
+                            size={'lg'}
+                            disabled={isAddingServer}>
                             Cofnij
                         </Button>
                     )}
-                    {nextStepReady && (
-                        <Button
-                            styling={'primary'}
-                            element={'button'}
-                            onClick={incrementStep}>
+                    {nextStepReady && step < 2 && (
+                        <Button size={'lg'} onClick={incrementStep}>
                             Przejdź do kolejnego kroku!
                         </Button>
                     )}
