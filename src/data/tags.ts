@@ -1,8 +1,19 @@
 import prisma from '@/lib/prisma'
 
-export const getTags = async () => {
-    const gamemodesRaw: { gamemode: object }[] =
-        await prisma.$queryRaw`SELECT DISTINCT JSONB_ARRAY_ELEMENTS(gamemodes) AS gamemode FROM dev."ServerMetadata"`
+export type Tag = {
+    tag: string
+    normalized: string
+}
 
-    return gamemodesRaw.map(r => r.gamemode)
+export const getTags = async () => {
+    const result = await prisma.$queryRaw`
+        SELECT DISTINCT jsonb_array_elements(gamemodes) as value
+        FROM server_metadata
+        WHERE gamemodes IS NOT NULL
+        ORDER BY value
+    `
+
+    console.log(result)
+
+    return result as Array<{ value: Tag }>
 }
