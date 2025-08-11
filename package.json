@@ -6,7 +6,9 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "migrate-servers": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/migrate-data.ts",
+        "update-servers": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/update-statuses.ts"
     },
     "dependencies": {
         "@prisma/client": "^6.10.0",
@@ -22,6 +24,7 @@
         "jsonwebtoken": "^9.0.2",
         "lucide-react": "^0.525.0",
         "md5": "^2.3.0",
+        "mongodb": "^6.17.0",
         "next": "15.3.4",
         "next-logger": "^5.0.1",
         "paybylink-wrapper": "^2.1.5",
@@ -54,7 +57,7 @@
         "typescript": "^5.8.3"
     },
     "prisma": {
-        "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+        "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
     },
     "pnpm": {
         "overrides": {
@@ -65,5 +68,6 @@
             "@prisma/engines",
             "prisma"
         ]
-    }
+    },
+    "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f"
 }
