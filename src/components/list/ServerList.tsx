@@ -1,17 +1,19 @@
 import { FunctionComponent } from 'react'
 import { ServerListItem } from '@/components/list/ServerListItem'
-import { getServers } from '@/data/server'
+import { getServers, searchServers } from '@/data/server'
 
 interface ServerListProps {
     promoted: boolean
     page: number
+    tags?: string[]
 }
 
 export const ServerList: FunctionComponent<ServerListProps> = async ({
     promoted,
     page,
+    tags,
 }) => {
-    const data = await getData(promoted, page)
+    const data = await getData(promoted, page, tags)
 
     if (data.length === 0)
         if (promoted)
@@ -44,7 +46,14 @@ export const ServerList: FunctionComponent<ServerListProps> = async ({
     )
 }
 
-export const getData = async (promoted: boolean, page: number) => {
+export const getData = async (
+    promoted: boolean,
+    page: number,
+    tags?: string[]
+) => {
+    if (tags && tags.length > 0) {
+        return searchServers({ query: '', tags, page, promoted })
+    }
     return getServers({
         skip: 20 * (page - 1),
         take: 20 * page,
