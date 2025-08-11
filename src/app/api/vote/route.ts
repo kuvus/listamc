@@ -2,90 +2,96 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getClientIp } from 'request-ip'
 import prisma from '@/lib/prisma'
 import md5 from 'md5'
+import { verify } from 'jsonwebtoken'
+import { env } from '@/env'
 
 export async function POST(request: NextRequest) {
-    if (request.headers.get('content-type') !== 'application/json')
+    const contentType = request.headers.get('content-type') ?? ''
+    if (!contentType.includes('application/json'))
         return NextResponse.json(
             { message: 'This API only accepts JSON format.' },
             { status: 400 }
         )
 
     const req = await request.json()
-    const serverId = req?.serverId
-    const nick = req?.nick
-    const clientIP = getClientIp(request)
+    const serverId = Number(req?.serverId)
+    const token = req?.token as string | undefined
+    const nick = req?.nick as string | undefined
 
-    console.log(clientIP)
+    if (!serverId || Number.isNaN(serverId))
+        return NextResponse.json({ message: 'Invalid data' }, { status: 400 })
 
-    // TODO: przetestować IP, ale powinno działać
+    // Verify vote token
+    if (!token)
+        return NextResponse.json({ message: 'Missing token' }, { status: 401 })
 
-    if (!serverId)
-        return NextResponse.json(
-            {
-                message: 'Invalid data',
-            },
-            {
-                status: 400,
-            }
-        )
+    try {
+        const decoded = verify(token, process.env.JWT_SECRET!) as {
+            serverId?: number
+            type?: string
+        }
+        if (decoded?.type !== 'vote' || decoded?.serverId !== serverId)
+            return NextResponse.json(
+                { message: 'Invalid token' },
+                { status: 401 }
+            )
+    } catch {
+        return NextResponse.json({ message: 'Invalid token' }, { status: 401 })
+    }
 
-    // Check if client IP provided
+    // Resolve client IP
+    let clientIP =
+        (getClientIp(request as unknown as any) as string | null) ||
+        request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        request.headers.get('x-real-ip') ||
+        ''
     if (!clientIP)
         return NextResponse.json(
-            {
-                message: 'Could not check client IP address',
-            },
-            {
-                status: 400,
-            }
+            { message: 'Could not check client IP address' },
+            { status: 400 }
         )
 
-    // Check if client IP is safe
-    if (!(await checkIP(clientIP)))
+    // Normalize IPv6-mapped IPv4
+    if (clientIP.startsWith('::ffff:'))
+        clientIP = clientIP.replace('::ffff:', '')
+
+    // Check server existence
+    const server = await prisma.server.findUnique({
+        where: { id: serverId },
+        select: { id: true },
+    })
+    if (!server)
         return NextResponse.json(
-            {
-                message: 'Client IP marked as proxy',
-            },
-            {
-                status: 400,
-            }
+            { message: 'Server not found' },
+            { status: 404 }
         )
 
-    // TODO: check token
+    // Proxy check (skip for localhost)
+    const isLocalhost = clientIP === '127.0.0.1' || clientIP === '::1'
+    if (!isLocalhost) {
+        const isSafe = await checkIP(clientIP)
+        if (!isSafe)
+            return NextResponse.json(
+                { message: 'Client IP marked as proxy' },
+                { status: 400 }
+            )
+    }
 
-    // Check if user already voted
-    const userVoted = await prisma.vote.findFirst({
+    // 24h rate-limit per IP per server
+    const twentyFourHoursAgo = new Date(Date.now() - 1000 * 60 * 60 * 24)
+    const recentVote = await prisma.vote.findFirst({
         where: {
             server_id: serverId,
             hash: md5(clientIP),
+            date: { gte: twentyFourHoursAgo },
         },
+        select: { id: true, date: true },
     })
 
-    if (userVoted)
+    if (recentVote)
         return NextResponse.json(
-            {
-                message: 'You already voted for this server',
-            },
-            {
-                status: 400,
-            }
-        )
-
-    // Check if server exists
-    const server = await prisma.server.findUnique({
-        where: {
-            id: serverId,
-        },
-    })
-
-    if (!server)
-        return NextResponse.json(
-            {
-                message: 'Server not found',
-            },
-            {
-                status: 404,
-            }
+            { message: 'You can vote for this server again in 24 hours.' },
+            { status: 429 }
         )
 
     // Create vote
@@ -94,21 +100,16 @@ export async function POST(request: NextRequest) {
             server_id: serverId,
             hash: md5(clientIP),
         },
+        select: { id: true },
     })
 
     if (!vote)
         return NextResponse.json(
-            {
-                message: 'Error while creating vote',
-            },
-            {
-                status: 500,
-            }
+            { message: 'Error while creating vote' },
+            { status: 500 }
         )
 
-    return NextResponse.json({
-        success: true,
-    })
+    return NextResponse.json({ success: true })
 }
 
 type IPCheckResponse = {
@@ -118,7 +119,7 @@ type IPCheckResponse = {
         provider: string
         country: string
     }
-    risk: {
+    risks: {
         total: number
         proxy: boolean
         country: boolean
@@ -142,18 +143,35 @@ type IPCheckResponse = {
  * @param ip
  */
 const checkIP = async (ip: string) => {
-    console.log('aaa')
-    console.log(ip)
     try {
-        const res: IPCheckResponse = await fetch(
-            `https://noproxy-api.okaeri.eu/v1/${ip}`
-        ).then(res => {
-            if (!res.ok) throw new Error('Could not check IP address')
-            return res.json()
+        const res = await fetch(`https://api.noproxy.okaeri.cloud/v1/${ip}`, {
+            headers: {
+                Authorization: `Bearer ${env.NOPROXY_API_KEY ?? ''}`,
+            },
+            cache: 'no-store',
         })
 
-        return !(res?.suggestions.verify === true)
-    } catch (e) {
+        if (!res.ok) {
+            // Try to read error body to decide behavior
+            let message = 'Could not check IP address'
+            try {
+                const body = (await res.json()) as {
+                    status?: number
+                    error?: string
+                    message?: string
+                }
+                message = body?.message || body?.error || message
+            } catch {}
+            throw new Error(message)
+        }
+
+        const data = (await res.json()) as IPCheckResponse
+
+        // Consider IP unsafe if service suggests blocking or flags proxy risk
+        const shouldBlock = data.suggestions?.block === true
+        const isProxy = data.risks?.proxy === true
+        return !(shouldBlock || isProxy)
+    } catch {
         return false
     }
 }
